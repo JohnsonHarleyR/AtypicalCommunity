@@ -12,6 +12,8 @@ namespace Atypical.Controllers
     public class EntryController : Controller
     {
 
+        // TODO refactor names of diary entries and charts so that it is more clear what they are
+
         private EntryOrchestrator entryOrchestrator = new EntryOrchestrator();
         private UserOrchestrator userOrchestrator = new UserOrchestrator();
 

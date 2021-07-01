@@ -136,6 +136,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\ChartController.cs" />
     <Compile Include="Controllers\EntryController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
@@ -147,6 +148,7 @@
     <Compile Include="Helpers\ChartHelper.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\UserHelper.cs" />
+    <Compile Include="Models\Bank\BankAccountViewModel.cs" />
     <Compile Include="Models\Diary\ChartNodeViewModel.cs" />
     <Compile Include="Models\Diary\ChartViewModel.cs" />
     <Compile Include="Models\Diary\EntryViewModel.cs" />
@@ -211,6 +213,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Images\" />
     <Folder Include="MailDrop\" />
+    <Folder Include="Views\Bank\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
