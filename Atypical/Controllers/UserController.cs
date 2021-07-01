@@ -279,7 +279,9 @@ namespace Atypical.Controllers
                         // send email
                         try
                         {
-                            await smtp.SendMailAsync(email);
+                            // HACK For now skip this part until we can get it working
+
+                            //await smtp.SendMailAsync(email);
 
                             // put the code into the session
                             Session["resetCode"] = code;
@@ -371,7 +373,16 @@ namespace Atypical.Controllers
         {
             // check that the model is valid
             if (ModelState.IsValid)
+            {
+                // if the code is correct, redirect user to a page to set a new password
+                if (model.CodeForReset == model.CodeEntered)
+                {
+                    return RedirectToAction("NewPassword", "User");
+                }
 
+            }
+            // if model state is not valid, set error message before returning
+            ViewBag.ErrorMessage = "Error: something went wrong.";
 
             return View(model);
 
@@ -380,7 +391,7 @@ namespace Atypical.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PasswordReset(CheckCodeViewModel model)
+        public ActionResult NewPassword(CheckCodeViewModel model)
         {
             // Set up a view model so the user can reset their password
 

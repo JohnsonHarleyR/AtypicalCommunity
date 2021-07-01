@@ -23,9 +23,13 @@ textarea {
     font-family: Lato, sans-serif;
     text-align: center;
     font-size: larger;
+    color: black;
     /*width: 70%;*/
 }
 
+a {
+    color: darkblue;
+}
 
 
 #entry-text {

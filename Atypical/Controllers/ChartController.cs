@@ -9,6 +9,8 @@ namespace Atypical.Controllers
 {
     public class ChartController : Controller
     {
+        // TODO get the charts further along.
+
         // GET: Chart
 
         //private EntryOrchestrator entryOrchestrator = new EntryOrchestrator();

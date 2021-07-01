@@ -204,7 +204,7 @@
     <Content Include="Views\Error\ConfirmEmail.cshtml" />
     <Content Include="Views\User\Confirm.cshtml" />
     <Content Include="Views\User\ForgotPassword.cshtml" />
-    <Content Include="Views\User\PasswordReset.cshtml" />
+    <Content Include="Views\User\NewPassword.cshtml" />
     <Content Include="Views\User\CheckCode.cshtml" />
   </ItemGroup>
   <ItemGroup>

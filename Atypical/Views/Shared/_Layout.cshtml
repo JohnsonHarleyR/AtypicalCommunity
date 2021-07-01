@@ -6,11 +6,12 @@
     <title>@ViewBag.Title - Mood Diary</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
+            <a class="navbar-brand" href="/Home/Index">Navbar</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
             </button>
 
@@ -26,19 +27,24 @@
                     @if (Session["username"] == null)
                     {
                         <li class="nav-item">
-                            <a class="nav-link" href="/User/Create">Sign Up</a>
+                            <a class="nav-link" href="/User/Login">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/User/Login">Login</a>
+                            <a class="nav-link" href="/User/Create">Sign Up</a>
                         </li>
                     }
                     else
                     {
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Entry/View">Diary</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Entry/New">Login</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown dropdown-toggle" data-bs-toggle="dropdown"
+                               role="button" aria-haspopup="true" aria-expanded="false">Diary
+                            <i class="fa fa-caret-down"></i></a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="/Entry/View">View</a>
+                                <a class="dropdown-item" href="/Entry/New">New Entry</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/Chart/Weekly">Chart Data</a>
+                            </div>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/User/Logout">Logout</a>
@@ -75,5 +81,8 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+
+
 </body>
 </html>

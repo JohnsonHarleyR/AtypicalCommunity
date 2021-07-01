@@ -16,7 +16,7 @@
         <br /><br />
     </div>
 
-    @using (Html.BeginForm("PasswordReset", "User",
+    @using (Html.BeginForm("NewPassword", "User",
     FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
@@ -47,6 +47,7 @@
 
         </div>
     }
+    <p id="error-message" style="color: red;">@ViewBag.ErrorMessage</p>
 </div>
 
 @section Scripts {
