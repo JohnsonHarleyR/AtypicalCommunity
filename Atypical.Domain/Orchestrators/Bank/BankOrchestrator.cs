@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Atypical.Domain.Orchestrators.Bank
 {
 
-    class BankOrchestrator
+    public class BankOrchestrator
     {
 
         private BankRepository bankRepository;

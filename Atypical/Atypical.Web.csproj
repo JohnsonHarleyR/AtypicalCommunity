@@ -208,6 +208,7 @@
     <Content Include="Views\User\ForgotPassword.cshtml" />
     <Content Include="Views\User\NewPassword.cshtml" />
     <Content Include="Views\User\CheckCode.cshtml" />
+    <Content Include="Views\Shared\_Money.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
