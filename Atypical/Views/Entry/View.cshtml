@@ -1,0 +1,97 @@
+﻿@using Atypical.Web.Models.Diary
+@model EntryViewModel
+
+@{
+    ViewBag.Title = "View Diary";
+}
+
+@Styles.Render("~/Content/entry.css")
+
+<!-- TODO Set up a link to calendar to choose an entry - also to a stat page -->
+<!-- Create javascript object with all mood values for the mood-display file -->
+<script>
+
+    var moods = {
+        happy: @Model.Happy,
+        sad: @Model.Sad,
+        confident: @Model.Confident,
+        mad: @Model.Mad,
+        hopeful: @Model.Hopeful,
+        scared: @Model.Scared
+    };
+
+    console.log("Happy: " + @Model.Happy);
+    console.log("Happy: " + moods.happy);
+
+</script>
+
+<!--TODO Format this page -->
+
+<div id="entry-area">
+
+    <div id="top-section">
+        <h1 id="title">@Model.Title</h1>
+        <span id="date-and-time"><i>@Model.DateAndTime</i></span>
+    </div>
+
+
+
+    <!-- Put the moods in the order that shows up on the background-->
+    <div id="mood-section">
+        <span id="mood-top-row"><b>Mad: </b>@Model.Mad | <b>Confident: </b>@Model.Confident | <b>Happy: </b>@Model.Happy</span><br />
+        <span id="mood-bottom-row"><b>Hopeful: </b>@Model.Hopeful | <b>Sad: </b>@Model.Sad | <b>Scared: </b>@Model.Scared</span><br />
+    </div>
+
+    <div id="entry-text">
+        @Html.Raw(Model.Text)
+
+    </div>
+
+    <!-- Allow user to edit the entry -->
+    <div id="edit-entry">
+        <a id="edit-entry" href="~/Entry/Edit?id=@(Model.Id)">
+            <br />
+            <button type="button" class="btn btn-default" id="prev-entry">Edit Entry</button>
+        </a>
+
+    </div>
+
+    <!-- TODO Allow the user to edit their entry. -->
+
+    <div id="navigate-entries">
+        <!-- Navigation buttons go here -->
+
+        @if (ViewBag.EntryIndex != 0 || ViewBag.EntryIndex != ViewBag.FinalIndex)
+        {
+            <hr />
+        }
+
+        @if (ViewBag.EntryIndex != ViewBag.FinalIndex)
+        {
+            <a id="prev-entry" href="~/Entry/View?index=@(ViewBag.EntryIndex + 1)">
+                <button type="button" class="btn btn-primary btn-arrow-left" id="prev-entry">Prev</button>
+            </a>
+        }
+
+        @if (ViewBag.EntryIndex != 0)
+        {
+            <a href="~/Entry/View?index=@(ViewBag.EntryIndex - 1)">
+                <button type="button" class="btn btn-primary btn-arrow-right" id="next-entry">Next</button>
+            </a>
+
+        }
+
+
+
+        @if (ViewBag.EntryIndex != 0 || ViewBag.EntryIndex != ViewBag.FinalIndex)
+        {
+            <hr />
+        }
+
+    </div>
+
+</div>
+
+
+
+@Scripts.Render("~/Scripts/mood-display.js")

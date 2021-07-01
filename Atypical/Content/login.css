@@ -1,0 +1,5 @@
+﻿
+#login-error, #email-error,
+.code-error, #login-message {
+    color: red;
+}

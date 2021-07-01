@@ -1,0 +1,18 @@
+﻿@using Atypical.Web.Models.User
+@model UserViewModel
+
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<!-- Greet user if they are logged in -->
+@if (Session["username"] == null)
+{
+    <h2>Hello. :)</h2>
+}
+else
+{
+    <h2>Hello, @(Session["username"]). :)</h2>
+    <img src="@(Model.ProfileImageUrl)" />
+}

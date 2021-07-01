@@ -1,0 +1,105 @@
+﻿@using Atypical.Web.Models.Diary
+@model NewEntryViewModel
+
+@{
+    ViewBag.Title = "New Entry";
+}
+
+@Styles.Render("~/Content/entry.css")
+
+<!-- TODO only allow user to add new diary entry if their email is confirmed -->
+
+<h2>New Entry</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true)
+
+        @Html.HiddenFor(model => model.UserId, new { @Value = Session["userId"] })
+
+        <div class="form-group">
+            <div class="control-label col-md-2">Title:</div>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Title, new { id = "title-box" })
+                <br />
+                @Html.ValidationMessageFor(model => model.Title, "", new { @style = "color: red;" })
+            </div>
+        </div>
+
+        <!-- TODO Create dropdown for moods - also allow null value -->
+        <div class="form-group">
+            <div class="control-label col-md-2">Mood:</div>
+            <div class="col-md-10" id="mood-section">
+                <label>Happy</label>
+                @Html.DropDownListFor(model => model.Happy,
+               Enumerable.Range(0, 11).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), " ")
+
+                <label>Sad</label>
+                @Html.DropDownListFor(model => model.Sad,
+               Enumerable.Range(0, 11).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), " ")
+
+                <label>Confident</label>
+                @Html.DropDownListFor(model => model.Confident,
+               Enumerable.Range(0, 11).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), " ")
+
+
+                <br />
+
+                <label>Mad</label>
+                @Html.DropDownListFor(model => model.Mad,
+                Enumerable.Range(0, 11).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), " ")
+
+                <label>Hopeful</label>
+                @Html.DropDownListFor(model => model.Hopeful,
+               Enumerable.Range(0, 11).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), " ")
+
+                <label>Scared</label>
+                @Html.DropDownListFor(model => model.Scared,
+               Enumerable.Range(0, 11).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), " ")
+
+
+                <br />
+                @Html.ValidationMessageFor(model => model.Happy, "", new { @style = "color: red;" })
+                @Html.ValidationMessageFor(model => model.Sad, "", new { @style = "color: red;" })
+                @Html.ValidationMessageFor(model => model.Confident, "", new { @style = "color: red;" })
+                @Html.ValidationMessageFor(model => model.Mad, "", new { @style = "color: red;" })
+                @Html.ValidationMessageFor(model => model.Hopeful, "", new { @style = "color: red;" })
+                @Html.ValidationMessageFor(model => model.Scared, "", new { @style = "color: red;" })
+
+            </div>
+        </div>
+
+        <!-- TODO Create large text area for user -->
+        <div class="form-group">
+            <div class="control-label col-md-2">Entry:</div>
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Text, new { @class = "entry-text" })
+                <br />
+                <i>
+                    (Note: The following basic BBCode tags are allowed here, but no HTML:<br /> [br] for a new line,
+                    [b]text[/b] to <b>bold</b> text, [i]text[/i] to
+                </i>italicize<i>
+                    text,
+                    and [u]text[/u] to <u>underline</u> text.)
+                </i>
+                <br />
+                @Html.ValidationMessageFor(model => model.Text, "", new { @style = "color: red;" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" id="create-account-button" value="Create Entry" class="btn btn-default" />
+            </div>
+        </div>
+
+    </div>
+
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,59 @@
+﻿@using Atypical.Web.Models.User
+@model UserLoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+@Styles.Render("~/Content/login.css")
+
+<h2>Login</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal">
+
+
+
+    <div class="form-group">
+        <div class="control-label col-md-2">Email:</div>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Email)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="control-label col-md-2">Password:</div>
+        <div class="col-md-10">
+            @Html.PasswordFor(model => model.Password)
+        </div>
+
+
+
+        <div class="col-md-10" id="login-error">
+            @ViewBag.IncorrectLogin
+        </div>
+
+    </div>
+
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" id="login-button" value="Login" class="btn btn-default" />
+            <br />
+            <sub><a href="~/User/ForgotPassword">Forgot password?</a></sub>
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10" id="login-message">
+            @ViewBag.Message
+        </div>
+    </div>
+
+</div>
+}

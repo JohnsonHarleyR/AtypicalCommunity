@@ -1,0 +1,155 @@
+﻿@using Atypical.Web.Models.Diary
+@model ChartViewModel
+
+@{
+    ViewBag.Title = "Weekly Chart";
+}
+
+
+
+<html>
+<head>
+    <script>
+
+        var chartModel = {
+            type: '@Model.Type.ToString()',
+            title: '@Model.Title',
+            nodes: [['Day of the Week', 'Happy', 'Sad', 'Confident', 'Mad', 'Hopeful', 'Scared']]
+        };
+
+        console.log('Nodes ' + @Model.Nodes.Count);
+
+    </script>
+
+    @foreach (var node in Model.Nodes)
+    {
+        <script>
+
+
+            // add the new row to the data
+            chartModel.nodes.push(
+                ['@node.NodeName',
+                    @node.Happy, @node.Sad, @node.Confident,
+                    @node.Mad, @node.Hopeful, @node.Scared]
+            );
+
+        </script>
+    }
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+        console.log(chartModel.nodes);
+
+        google.charts.load('current', { 'packages': ['corechart'] });
+
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable(chartModel.nodes);
+
+
+            //var options = {
+            //    isStacked: true,
+            //    title: chartModel.title,
+            //    hAxis: { title: 'Day of The Week', titleTextStyle: { color: '#333' } },
+            //    vAxis: { minValue: 0 }
+            //};
+
+            var options = {
+                title: chartModel.title,
+                curveType: 'function',
+                legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, options);
+
+            //var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+            //chart.draw(data, options);
+
+        }
+    </script>
+</head>
+<body>
+    <h2>Weekly</h2>
+    <div id="curve_chart" style="width: 1200px; height: 500px"></div>
+    @*<div id="chart_div" style="width: 100%; height: 500px;"></div>*@
+</body>
+</html>
+
+
+
+@*<head>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+        <script>
+            var dataRows = [];
+        </script>
+
+        @foreach (var node in Model.Nodes)
+        {
+            <script>
+
+                    // create row
+                    let newRow = [@node.NodeName,
+                        @node.Happy, @node.Sad, @node.Confident,
+                        @node.Mad, @node.Hopeful, @node.Scared];
+
+                    // add the new row to the data
+                    dataRows.push(newRow);
+
+            </script>
+        }
+
+        <script type="text/javascript">
+
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Day of the Week');
+            data.addColumn('number', 'Happy');
+            data.addColumn('number', 'Sad');
+            data.addColumn('number', 'Confident');
+            data.addColumn('number', 'Mad');
+            data.addColumn('number', 'Hopeful');
+
+
+            // Add new rows with all the data
+            data.addRows(dataRows);
+
+            var options = {
+                chart: {
+                    title: '@(Model.Title)',
+                    subtitle: 'Different moods on a scale from 0-10',
+                    interpolateNulls: true
+                },
+                width: 900,
+                height: 500
+            };
+
+            var chart = new google.charts.Line(document.getElementById('linechart_material'));
+
+            chart.draw(data, google.charts.Line.convertOptions(options));
+        }
+        </script>
+
+
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+    </head>
+
+
+    <body>
+
+        <h2>Weekly</h2>
+
+        <div id="linechart_material" style="width: 640px; height: 480px">
+
+        </div>
+    </body>*@
+
