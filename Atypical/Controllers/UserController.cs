@@ -151,6 +151,9 @@ namespace Atypical.Controllers
                         IsEmailConfirmed = model.IsEmailConfirmed
                     };
 
+                    // HACK for now, just make email confirmed until we can get email sending working
+                    newUser.IsEmailConfirmed = true;
+
                     // validate success
                     bool successfullyCreatedUser = userOrchestrator.CreateUser(newUser);
 
