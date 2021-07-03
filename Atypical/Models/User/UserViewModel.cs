@@ -14,6 +14,7 @@ namespace Atypical.Web.Models.User
         [Required]
         public string FirstName { get; set; }
         public string ProfileImageUrl { get; set; }
+        // TODO add validation that user is at least 13
         [Required]
         public DateTime DateOfBirth { get; set; }
         [Required]

@@ -41,7 +41,8 @@
         <div class="form-group">
             <div class="control-label col-md-2">Date of Birth:</div>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.DateOfBirth)
+                <input type="date" name="DateOfBirth" class="date" />
+                @*@Html.EditorFor(model => model.DateOfBirth)*@
                 @Html.ValidationMessageFor(model => model.DateOfBirth)
             </div>
         </div>

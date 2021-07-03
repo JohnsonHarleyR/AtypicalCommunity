@@ -222,130 +222,39 @@ namespace Atypical.Controllers
         }
 
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult SendCode(ForgotPasswordViewModel model)
-        //{
-
-        //    // create a verification code
-        //    string code = "code"; // TODO turn to real code generated
-
-        //    // get the user to send the email
-        //    UserDto user = userOrchestrator.GetUserByEmail(model.Email);
-
-        //    if (user != null)
-        //    {
-        //        // Send a message to their email with the verification code
-        //        bool sendSuccessful = EmailHelper.SendResetCode(user, code);
-
-        //        // if it worked
-        //        if (sendSuccessful)
-        //        {
-        //            // put the code into the session
-        //            Session["resetCode"] = code;
-        //            Session["codeEmail"] = model.Email;
-
-        //            return RedirectToAction("CheckCode", "User");
-        //        }
-
-        //    }
-        //    // otherwise, return to login and let user know there was an error
-        //    return RedirectToAction("Login", "User", new { message = "Could not send email." });
-
-        //}
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SendCode(ForgotPasswordViewModel model)
+        public ActionResult SendCode(ForgotPasswordViewModel model)
         {
 
-            if (ModelState.IsValid)
+            // create a verification code
+            string code = EmailHelper.GenerateCode(10); // TODO turn to real code generated
+
+            // get the user to send the email
+            UserDto user = userOrchestrator.GetUserByEmail(model.Email);
+
+            if (user != null)
             {
-                // create a verification code
-                string code = "code"; // TODO turn to real code generated
+                // Send a message to their email with the verification code
+                bool sendSuccessful = EmailHelper.SendResetCode(user.Email, code);
 
-                // get the user to send the email
-                UserDto user = userOrchestrator.GetUserByEmail(model.Email);
-
-                if (user != null)
+                // if it worked
+                if (sendSuccessful)
                 {
-                    // Send a message to their email with the verification code
+                    // put the code into the session
+                    Session["resetCode"] = code;
+                    Session["codeEmail"] = model.Email;
 
-                    // create message to send
-                    string title = "Password Reset Code";
-                    string message = $"Test send!<br><br>Code: {code}";
-                    MailMessage email = EmailHelper.CreateEmail(user, title, message);
-
-                    // create smtp client
-                    using (var smtp = EmailHelper.GetSmtpClient()) // will set it up
-                    {
-                        // send email
-                        try
-                        {
-                            // HACK For now skip this part until we can get it working
-
-                            await smtp.SendMailAsync(email);
-
-                            // put the code into the session
-                            Session["resetCode"] = code;
-                            Session["codeEmail"] = model.Email;
-
-                            // return true after this is done
-                            return RedirectToAction("CheckCode", "User");
-                        }
-                        catch (SmtpFailedRecipientsException ex)
-                        {
-                            for (int i = 0; i < ex.InnerExceptions.Length; i++)
-                            {
-                                SmtpStatusCode status = ex.InnerExceptions[i].StatusCode;
-                                if (status == SmtpStatusCode.MailboxBusy ||
-                                    status == SmtpStatusCode.MailboxUnavailable)
-                                {
-                                    Console.WriteLine("Delivery failed - retrying in 5 seconds.");
-                                    System.Threading.Thread.Sleep(5000);
-                                    await smtp.SendMailAsync(email);
-
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Failed to deliver message to {0}",
-                                        ex.InnerExceptions[i].FailedRecipient);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-
-                            string messageString = 
-                                $"Exception caught in RetryIfBusy(): {ex.ToString()}";
-
-                            return RedirectToAction("Login", "User", new { message = messageString });
-                        }
-                        // go to next page
-                        
-                    }
-
-
-                    //bool sendSuccessful = EmailHelper.SendResetCode(user, code);
-
-                    //// if it worked
-                    //if (sendSuccessful)
-                    //{
-                    //    // put the code into the session
-                    //    Session["resetCode"] = code;
-                    //    Session["codeEmail"] = model.Email;
-
-                    //    return RedirectToAction("CheckCode", "User");
-                    //}
-
+                    return RedirectToAction("CheckCode", "User");
                 }
 
             }
-
             // otherwise, return to login and let user know there was an error
             return RedirectToAction("Login", "User", new { message = "Could not send email." });
 
         }
+
+        
 
 
         public ActionResult CheckCode()
