@@ -1,7 +1,7 @@
 ﻿CREATE TABLE Bank (
     UserId   INTEGER PRIMARY KEY,
-    Checking DOUBLE  DEFAULT (0) 
+    Checking INT     DEFAULT (0) 
                      NOT NULL,
-    Savings  DOUBLE  NOT NULL
+    Savings  INT     NOT NULL
                      DEFAULT (100) 
 );

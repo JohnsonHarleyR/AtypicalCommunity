@@ -18,6 +18,74 @@ namespace Atypical.Data.Repositories.Bank
             ConnectionString = ConfigurationManager.ConnectionStrings["SqliteConnection"].ConnectionString;
         }
 
+        // check if the table exists
+        public bool TableExists()
+        {
+
+            using (var connection = new SqliteConnection(ConnectionString))
+            {
+
+                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+
+                string sql = $@"SELECT * FROM Bank";
+
+                SqliteCommand command = new SqliteCommand(sql, connection);
+
+
+                connection.Open();
+
+                try
+                {
+                    using (SqliteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+
+                            // success
+
+                        }
+
+                        connection.Close();
+                        return true;
+                    }
+
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+            }
+        }
+
+        // create table if it doesn't exist
+        public void CreateTable()
+        {
+            using (var connection = new SqliteConnection(ConnectionString))
+            {
+                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+
+                string sql = $@"CREATE TABLE Bank (
+    UserId   INTEGER PRIMARY KEY,
+    Checking INT     DEFAULT (0) 
+                     NOT NULL,
+    Savings  INT     NOT NULL
+                     DEFAULT (100) 
+);
+";
+
+                SqliteCommand command = new SqliteCommand(sql, connection);
+
+                connection.Open();
+
+                command.ExecuteNonQuery();
+
+                connection.Close();
+
+            }
+        }
+
+
         /// <summary>
         /// Grab an entry based on the entry's Id.
         /// </summary>
@@ -25,6 +93,12 @@ namespace Atypical.Data.Repositories.Bank
         /// <returns></returns>
         public BankAccountDto GetAccountByUserId(int userId)
         {
+            // first check that table exists - if not, create the table
+            if (!TableExists())
+            {
+                CreateTable();
+            }
+
             BankAccountDto account = null;
 
             using (var connection = new SqliteConnection(ConnectionString))
@@ -48,8 +122,8 @@ namespace Atypical.Data.Repositories.Bank
                         account = new BankAccountDto()
                         {
                             UserId = Int32.Parse(reader["UserId"].ToString()),
-                            Checking = Double.Parse(reader["Checking"].ToString()),
-                            Savings = Double.Parse(reader["Savings"].ToString())
+                            Checking = Int32.Parse(reader["Checking"].ToString()),
+                            Savings = Int32.Parse(reader["Savings"].ToString())
                         };
                     }
                     connection.Close();
@@ -66,6 +140,12 @@ namespace Atypical.Data.Repositories.Bank
         /// <param name="accountDto"></param>
         public void AddAccount(BankAccountDto accountDto)
         {
+
+            // first check that table exists - if not, create the table
+            if (!TableExists())
+            {
+                CreateTable();
+            }
 
             using (var connection = new SqliteConnection(ConnectionString))
             {
@@ -99,6 +179,12 @@ namespace Atypical.Data.Repositories.Bank
         /// <param name="accountDto"></param>
         public void UpdateAccount(BankAccountDto accountDto)
         {
+
+            // first check that table exists - if not, create the table
+            if (!TableExists())
+            {
+                CreateTable();
+            }
 
             using (var connection = new SqliteConnection(ConnectionString))
             {

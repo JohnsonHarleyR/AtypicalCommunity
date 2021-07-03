@@ -284,7 +284,7 @@ namespace Atypical.Controllers
                         {
                             // HACK For now skip this part until we can get it working
 
-                            //await smtp.SendMailAsync(email);
+                            await smtp.SendMailAsync(email);
 
                             // put the code into the session
                             Session["resetCode"] = code;

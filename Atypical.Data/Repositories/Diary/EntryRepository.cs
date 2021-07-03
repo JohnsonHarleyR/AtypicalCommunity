@@ -16,6 +16,79 @@ namespace Atypical.Data.Repositories.Diary
             ConnectionString = ConfigurationManager.ConnectionStrings["SqliteConnection"].ConnectionString;
         }
 
+        // check if the table exists
+        public bool TableExists()
+        {
+
+            using (var connection = new SqliteConnection(ConnectionString))
+            {
+
+                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+
+                string sql = $@"SELECT * FROM Entry";
+
+                SqliteCommand command = new SqliteCommand(sql, connection);
+
+
+                connection.Open();
+
+                try
+                {
+                    using (SqliteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+
+                            // success
+
+                        }
+
+                        connection.Close();
+                        return true;
+                    }
+
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+            }
+        }
+
+        // create table if it doesn't exist
+        public void CreateTable()
+        {
+            using (var connection = new SqliteConnection(ConnectionString))
+            {
+                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+
+                string sql = $@"CREATE TABLE Entry (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        UserId INT NOT NULL,
+  'DateAndTime' DATETIME NOT NULL,
+  `Happy` INT NOT NULL,
+  `Sad` INT NOT NULL,
+  `Confident` INT NOT NULL,
+  `Mad` INT NOT NULL,
+  `Hopeful` INT NOT NULL,
+  `Scared` INT NOT NULL,
+  `Title` VARCHAR(100) NOT NULL,
+  `Text` BLOB NOT NULL,
+  FOREIGN KEY (UserId) REFERENCES User(Id)
+)";
+
+                SqliteCommand command = new SqliteCommand(sql, connection);
+
+                connection.Open();
+
+                command.ExecuteNonQuery();
+
+                connection.Close();
+
+            }
+        }
+
 
         /// <summary>
         /// Add a new diary entry.
@@ -23,6 +96,12 @@ namespace Atypical.Data.Repositories.Diary
         /// <param name="entryDto"></param>
         public void AddEntry(EntryDto entryDto)
         {
+
+            // first check that table exists - if not, create the table
+            if (!TableExists())
+            {
+                CreateTable();
+            }
 
             using (var connection = new SqliteConnection(ConnectionString))
             {
@@ -71,6 +150,11 @@ namespace Atypical.Data.Repositories.Diary
         /// <param name="entryDto"></param>
         public void UpdateEntry(EntryDto entryDto)
         {
+            // first check that table exists - if not, create the table
+            if (!TableExists())
+            {
+                CreateTable();
+            }
 
             using (var connection = new SqliteConnection(ConnectionString))
             {
@@ -118,6 +202,12 @@ namespace Atypical.Data.Repositories.Diary
         /// <returns></returns>
         public List<EntryDto> GetEntriesByUserId(int userId)
         {
+            // first check that table exists - if not, create the table
+            if (!TableExists())
+            {
+                CreateTable();
+            }
+
             List<EntryDto> entries = new List<EntryDto>();
 
             using (var connection = new SqliteConnection(ConnectionString))
@@ -173,6 +263,12 @@ namespace Atypical.Data.Repositories.Diary
         /// <returns></returns>
         public EntryDto GetEntryById(int id)
         {
+            // first check that table exists - if not, create the table
+            if (!TableExists())
+            {
+                CreateTable();
+            }
+
             EntryDto entry = null;
 
             using (var connection = new SqliteConnection(ConnectionString))
@@ -224,10 +320,18 @@ namespace Atypical.Data.Repositories.Diary
         /// <returns></returns>
         public List<EntryDto> GetEntriesByDate(int userId, DateTime dateAndTime)
         {
+
+            // first check that table exists - if not, create the table
+            if (!TableExists())
+            {
+                CreateTable();
+            }
+
             List<EntryDto> entries = new List<EntryDto>();
 
-            DateTime date = dateAndTime.Date;
-            DateTime nextDate = date.AddDays(1);
+            DateTime date = new DateTime(dateAndTime.Year, dateAndTime.Month, dateAndTime.Day,
+                0, 0, 0);
+            DateTime nextDate = date.AddDays(1).AddSeconds(-1);
 
             using (var connection = new SqliteConnection(ConnectionString))
             {
@@ -287,6 +391,13 @@ namespace Atypical.Data.Repositories.Diary
         /// <returns></returns>
         public List<EntryDto> GetEntriesByDateRange(int userId, DateTime dateAndTimeMin, DateTime dateAndTimeMax)
         {
+
+            // first check that table exists - if not, create the table
+            if (!TableExists())
+            {
+                CreateTable();
+            }
+
             List<EntryDto> entries = new List<EntryDto>();
 
             using (var connection = new SqliteConnection(ConnectionString))

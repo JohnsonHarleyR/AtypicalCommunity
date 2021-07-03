@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Atypical.Crosscutting</RootNamespace>
     <AssemblyName>Atypical.Crosscutting</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,7 +47,9 @@
     <Compile Include="Dtos\Diary\EntryDto.cs" />
     <Compile Include="Dtos\Diary\FullChartDto.cs" />
     <Compile Include="Dtos\User\UserDto.cs" />
+    <Compile Include="Enums\CoinEnums.cs" />
     <Compile Include="Enums\DiaryEnums.cs" />
+    <Compile Include="Enums\EmailEnums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

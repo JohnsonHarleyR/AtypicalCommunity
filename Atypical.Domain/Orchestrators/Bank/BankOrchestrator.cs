@@ -80,7 +80,7 @@ namespace Atypical.Domain.Orchestrators.Bank
             
         }
 
-        public bool TransferBetweenAccounts(double amount, 
+        public bool TransferBetweenAccounts(int amount, 
             BankAccountDto sendingAccount, BankAccountDto receivingAccount)
         {
             // if eith dto is null, return false
@@ -116,7 +116,7 @@ namespace Atypical.Domain.Orchestrators.Bank
         /// <param name="amount"></param>
         /// <param name="accountDto"></param>
         /// <returns></returns>
-        public bool AddToChecking(double amount, BankAccountDto accountDto)
+        public bool AddToChecking(int amount, BankAccountDto accountDto)
         {
             // if the dto is null, return false
             if (accountDto == null)
@@ -140,7 +140,7 @@ namespace Atypical.Domain.Orchestrators.Bank
         /// <param name="amount"></param>
         /// <param name="accountDto"></param>
         /// <returns></returns>
-        public bool RemoveFromChecking(double amount, BankAccountDto accountDto)
+        public bool RemoveFromChecking(int amount, BankAccountDto accountDto)
         {
             // if the dto is null, return false
             if (accountDto == null)
@@ -170,7 +170,7 @@ namespace Atypical.Domain.Orchestrators.Bank
         /// <param name="amount"></param>
         /// <param name="accountDto"></param>
         /// <returns></returns>
-        public bool TransferCheckingToSavings(double amount, BankAccountDto accountDto)
+        public bool TransferCheckingToSavings(int amount, BankAccountDto accountDto)
         {
             // if the dto is null, return false
             if (accountDto == null)
@@ -209,7 +209,7 @@ namespace Atypical.Domain.Orchestrators.Bank
         /// <param name="amount"></param>
         /// <param name="accountDto"></param>
         /// <returns></returns>
-        public bool AddToSavings(double amount, BankAccountDto accountDto)
+        public bool AddToSavings(int amount, BankAccountDto accountDto)
         {
             // if the dto is null, return false
             if (accountDto == null)
@@ -233,7 +233,7 @@ namespace Atypical.Domain.Orchestrators.Bank
         /// <param name="amount"></param>
         /// <param name="accountDto"></param>
         /// <returns></returns>
-        public bool RemoveFromSavings(double amount, BankAccountDto accountDto)
+        public bool RemoveFromSavings(int amount, BankAccountDto accountDto)
         {
             // if the dto is null, return false
             if (accountDto == null)
@@ -263,7 +263,7 @@ namespace Atypical.Domain.Orchestrators.Bank
         /// <param name="amount"></param>
         /// <param name="accountDto"></param>
         /// <returns></returns>
-        public bool TransferSavingsToChecking(double amount, BankAccountDto accountDto)
+        public bool TransferSavingsToChecking(int amount, BankAccountDto accountDto)
         {
             // if the dto is null, return false
             if (accountDto == null)
