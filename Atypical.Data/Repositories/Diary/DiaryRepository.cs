@@ -75,43 +75,25 @@ namespace Atypical.Data.Repositories.Diary
                 CreateTable();
             }
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+                string sql = $"{Schema}.AddDiaryEntry";
 
-                string sql = $@"INSERT INTO Entry " +
-                    $@"(UserId, DateAndTime, Title, Text, Happy, Sad, Confident, Mad, Hopeful, Scared)" +
-                    $@"VALUES (@UserId, @DateAndTime, @Title, @Text, @Happy, @Sad, @Confident, @Mad, @Hopeful, @Scared)";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                // TODO Decide if there should be anything that can't be null - there probably should be lol
-
-                command.Parameters.AddWithValue("@UserId", entryDto.UserId);
-                command.Parameters.AddWithValue("@DateAndTime", DateTime.Now); // Enter the current datetime for this
-
-                command.Parameters.AddWithValue("@Title", entryDto.Title);
-
-                command.Parameters.AddWithValue("@Text", entryDto.Text);
-
-                command.Parameters.AddWithValue("@Happy", entryDto.Happy);
-
-                command.Parameters.AddWithValue("@Sad", entryDto.Sad);
-
-                command.Parameters.AddWithValue("@Confident", entryDto.Confident);
-
-                command.Parameters.AddWithValue("@Mad", entryDto.Mad);
-
-                command.Parameters.AddWithValue("@Hopeful", entryDto.Hopeful);
-
-                command.Parameters.AddWithValue("@Scared", entryDto.Scared);
-
-                connection.Open();
-
-                command.ExecuteNonQuery();
-
-                connection.Close();
-
+                connection.Execute(sql,
+                    new
+                    {
+                        UserId = entryDto.UserId,
+                        DateAndTime = DateTime.Now,
+                        Happy = entryDto.Happy,
+                        Sad = entryDto.Sad,
+                        Confident = entryDto.Confident,
+                        Mad = entryDto.Mad,
+                        Hopeful = entryDto.Hopeful,
+                        Scared = entryDto.Scared,
+                        Title = entryDto.Title,
+                        Text = entryDto.Text
+                    },
+                    commandType: System.Data.CommandType.StoredProcedure);
             }
 
         }
@@ -128,41 +110,26 @@ namespace Atypical.Data.Repositories.Diary
                 CreateTable();
             }
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+                string sql = $"{Schema}.UpdateDiaryEntry";
 
-                string sql = $@"UPDATE Entry " +
-                    $@"SET Title = @Title, Text = @Text, Happy = @Happy, Sad = @Sad, " +
-                    $@"Confident = @Confident, Mad = @Mad, Hopeful = @Hopeful, Scared = @Scared " +
-                    $@"WHERE Id = @Id;";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                command.Parameters.AddWithValue("@Id", entryDto.Id);
-
-                command.Parameters.AddWithValue("@Title", entryDto.Title);
-
-                command.Parameters.AddWithValue("@Text", entryDto.Text);
-
-                command.Parameters.AddWithValue("@Happy", entryDto.Happy);
-
-                command.Parameters.AddWithValue("@Sad", entryDto.Sad);
-
-                command.Parameters.AddWithValue("@Confident", entryDto.Confident);
-
-                command.Parameters.AddWithValue("@Mad", entryDto.Mad);
-
-                command.Parameters.AddWithValue("@Hopeful", entryDto.Hopeful);
-
-                command.Parameters.AddWithValue("@Scared", entryDto.Scared);
-
-                connection.Open();
-
-                command.ExecuteNonQuery();
-
-                connection.Close();
-
+                connection.Execute(sql,
+                    new
+                    {
+                        Id = entryDto.Id,
+                        UserId = entryDto.UserId,
+                        DateAndTime = DateTime.Now,
+                        Happy = entryDto.Happy,
+                        Sad = entryDto.Sad,
+                        Confident = entryDto.Confident,
+                        Mad = entryDto.Mad,
+                        Hopeful = entryDto.Hopeful,
+                        Scared = entryDto.Scared,
+                        Title = entryDto.Title,
+                        Text = entryDto.Text
+                    },
+                    commandType: System.Data.CommandType.StoredProcedure);
             }
 
         }
@@ -172,7 +139,7 @@ namespace Atypical.Data.Repositories.Diary
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public List<DiaryEntryDto> GetEntriesByUserId(int userId)
+        public IEnumerable<DiaryEntryDto> GetEntriesByUserId(int userId)
         {
             // first check that table exists - if not, create the table
             if (!TableExists())
@@ -180,50 +147,22 @@ namespace Atypical.Data.Repositories.Diary
                 CreateTable();
             }
 
-            List<DiaryEntryDto> entries = new List<DiaryEntryDto>();
+            IEnumerable<DiaryEntryDto> entries = new List<DiaryEntryDto>();
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
+                string sql = $"{Schema}.GetDiaryEntriesByUserId";
 
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
-
-                string sql = $@"SELECT * FROM Entry WHERE UserId = @UserId";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                command.Parameters.AddWithValue("@UserId", userId);
-
-                connection.Open();
-
-                using (SqliteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        entries.Add(
-                            new DiaryEntryDto()
-                            {
-                                Id = Int32.Parse(reader["Id"].ToString()),
-                                UserId = Int32.Parse(reader["UserId"].ToString()),
-                                DateAndTime = DateTime.Parse(reader["DateAndTime"].ToString()),
-                                Happy = Int32.Parse(reader["Happy"].ToString()),
-                                Sad = Int32.Parse(reader["Sad"].ToString()),
-                                Confident = Int32.Parse(reader["Confident"].ToString()),
-                                Mad = Int32.Parse(reader["Mad"].ToString()),
-                                Hopeful = Int32.Parse(reader["Hopeful"].ToString()),
-                                Scared = Int32.Parse(reader["Scared"].ToString()),
-                                Title = reader["Title"].ToString(),
-                                Text = reader["Text"].ToString()
-                            });
-
-                    }
-
-                    connection.Close();
-                }
-
-                // sort the entries by descending date - the default
-                entries = entries.OrderByDescending(e => e.DateAndTime).ToList();
+                entries = connection.Query<DiaryEntryDto>(sql,
+                    new {UserId = userId},
+                    commandType: System.Data.CommandType.StoredProcedure);
 
             }
+
+            // sort the entries by descending date - the default
+            entries = entries.OrderByDescending(e => e.DateAndTime).ToList();
+
+            
             return entries;
         }
 
@@ -243,45 +182,22 @@ namespace Atypical.Data.Repositories.Diary
 
             DiaryEntryDto entry = null;
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
+                string sql = $"{Schema}.GetDiaryEntryById";
 
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
-
-                string sql = $@"SELECT * FROM Entry WHERE Id = @Id;";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                command.Parameters.AddWithValue("@Id", id);
-
-                connection.Open();
-
-                using (SqliteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-
-                        entry = new DiaryEntryDto()
-                        {
-                            Id = Int32.Parse(reader["Id"].ToString()),
-                            UserId = Int32.Parse(reader["UserId"].ToString()),
-                            DateAndTime = DateTime.Parse(reader["DateAndTime"].ToString()),
-                            Happy = Int32.Parse(reader["Happy"].ToString()),
-                            Sad = Int32.Parse(reader["Sad"].ToString()),
-                            Confident = Int32.Parse(reader["Confident"].ToString()),
-                            Mad = Int32.Parse(reader["Mad"].ToString()),
-                            Hopeful = Int32.Parse(reader["Hopeful"].ToString()),
-                            Scared = Int32.Parse(reader["Scared"].ToString()),
-                            Title = reader["Title"].ToString(),
-                            Text = reader["Text"].ToString()
-                        };
-                    }
-                    connection.Close();
-                }
+                entry = connection.Query<DiaryEntryDto>(sql,
+                    new { Id = id },
+                    commandType: System.Data.CommandType.StoredProcedure)?.FirstOrDefault();
 
             }
+
+            // TODO add all diary entries to user
+
+
             return entry;
         }
+    
 
 
         /// <summary>
@@ -290,68 +206,40 @@ namespace Atypical.Data.Repositories.Diary
         /// <param name="userId"></param>
         /// <param name="dateAndTime"></param>
         /// <returns></returns>
-        public List<DiaryEntryDto> GetEntriesByDate(int userId, DateTime dateAndTime)
+        public IEnumerable<DiaryEntryDto> GetEntriesByDate(int userId, DateTime dateAndTime)
         {
 
-            // first check that table exists - if not, create the table
-            if (!TableExists())
-            {
-                CreateTable();
-            }
+        // first check that table exists - if not, create the table
+        if (!TableExists())
+        {
+            CreateTable();
+        }
 
-            List<DiaryEntryDto> entries = new List<DiaryEntryDto>();
+        IEnumerable<DiaryEntryDto> entries = new List<DiaryEntryDto>();
 
-            DateTime date = new DateTime(dateAndTime.Year, dateAndTime.Month, dateAndTime.Day,
+        DateTime date = new DateTime(dateAndTime.Year, dateAndTime.Month, dateAndTime.Day,
                 0, 0, 0);
-            DateTime nextDate = date.AddDays(1).AddSeconds(-1);
+        DateTime nextDate = date.AddDays(1).AddSeconds(-1);
 
-            using (var connection = new SqliteConnection(ConnectionString))
-            {
+        using (var connection = new SqlConnection(ConnectionString))
+        {
+            string sql = $"{Schema}.GetDiaryEntriesByDateRange";
 
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+            entries = connection.Query<DiaryEntryDto>(sql,
+                new { 
+                    UserId = userId,
+                    Date = date,
+                    NextDate = nextDate
+                },
+                commandType: System.Data.CommandType.StoredProcedure);
 
-                //string sql = $@"SELECT * FROM Entry WHERE CAST(DateAndTime AS DATE) = CAST(@DateAndTime AS DATE) AND UserId = @UserId;";
-                string sql = $@"SELECT * FROM Entry WHERE (DateAndTime BETWEEN @Date AND @NextDate) AND UserId = @UserId;";
+        }
 
-                SqliteCommand command = new SqliteCommand(sql, connection);
+        // sort the entries by descending date - the default
+        entries = entries.OrderByDescending(e => e.DateAndTime).ToList();
 
-                command.Parameters.AddWithValue("@Date", date);
-                command.Parameters.AddWithValue("@NextDate", nextDate);
-                command.Parameters.AddWithValue("@UserId", userId);
 
-                connection.Open();
-
-                using (SqliteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        entries.Add(
-                            new DiaryEntryDto()
-                            {
-                                Id = Int32.Parse(reader["Id"].ToString()),
-                                UserId = Int32.Parse(reader["UserId"].ToString()),
-                                DateAndTime = DateTime.Parse(reader["DateAndTime"].ToString()),
-                                Happy = Int32.Parse(reader["Happy"].ToString()),
-                                Sad = Int32.Parse(reader["Sad"].ToString()),
-                                Confident = Int32.Parse(reader["Confident"].ToString()),
-                                Mad = Int32.Parse(reader["Mad"].ToString()),
-                                Hopeful = Int32.Parse(reader["Hopeful"].ToString()),
-                                Scared = Int32.Parse(reader["Scared"].ToString()),
-                                Title = reader["Title"].ToString(),
-                                Text = reader["Text"].ToString()
-                            });
-
-                    }
-
-                    connection.Close();
-                }
-
-                // sort the entries by descending date - the default
-                entries.OrderByDescending(e => e.DateAndTime);
-                entries.Reverse();
-
-            }
-            return entries;
+        return entries;
         }
 
         /// <summary>
@@ -361,7 +249,7 @@ namespace Atypical.Data.Repositories.Diary
         /// <param name="dateAndTimeMin"></param>
         /// <param name="dateAndTimeMax"></param>
         /// <returns></returns>
-        public List<DiaryEntryDto> GetEntriesByDateRange(int userId, DateTime dateAndTimeMin, DateTime dateAndTimeMax)
+        public IEnumerable<DiaryEntryDto> GetEntriesByDateRange(int userId, DateTime dateAndTimeMin, DateTime dateAndTimeMax)
         {
 
             // first check that table exists - if not, create the table
@@ -370,53 +258,26 @@ namespace Atypical.Data.Repositories.Diary
                 CreateTable();
             }
 
-            List<DiaryEntryDto> entries = new List<DiaryEntryDto>();
-
-            using (var connection = new SqliteConnection(ConnectionString))
+            IEnumerable<DiaryEntryDto> entries = new List<DiaryEntryDto>();
+            using (var connection = new SqlConnection(ConnectionString))
             {
+                string sql = $"{Schema}.GetDiaryEntriesByDateRange";
 
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
-
-                string sql = $@"SELECT * FROM Entry WHERE CAST(DateAndTime AS DATE) >= CAST(@DateAndTimeMin AS DATE) " +
-                                $@"AND CAST(DateAndTime AS DATE) <= CAST(@DateAndTimeMax AS DATE) AND UserId = @UserId;";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                command.Parameters.AddWithValue("@DateAndTimeMin", dateAndTimeMin);
-                command.Parameters.AddWithValue("@DateAndTimeMax", dateAndTimeMax);
-                command.Parameters.AddWithValue("@UserId", userId);
-
-                connection.Open();
-
-                using (SqliteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
+                entries = connection.Query<DiaryEntryDto>(sql,
+                    new
                     {
-                        entries.Add(
-                            new DiaryEntryDto()
-                            {
-                                Id = Int32.Parse(reader["Id"].ToString()),
-                                UserId = Int32.Parse(reader["UserId"].ToString()),
-                                DateAndTime = DateTime.Parse(reader["DateAndTime"].ToString()),
-                                Happy = Int32.Parse(reader["Happy"].ToString()),
-                                Sad = Int32.Parse(reader["Sad"].ToString()),
-                                Confident = Int32.Parse(reader["Confident"].ToString()),
-                                Mad = Int32.Parse(reader["Mad"].ToString()),
-                                Hopeful = Int32.Parse(reader["Hopeful"].ToString()),
-                                Scared = Int32.Parse(reader["Scared"].ToString()),
-                                Title = reader["Title"].ToString(),
-                                Text = reader["Text"].ToString()
-                            });
-
-                    }
-
-                    connection.Close();
-                }
-
-                // sort the entries by descending date - the default
-                entries.OrderByDescending(e => e.DateAndTime);
+                        UserId = userId,
+                        Date = dateAndTimeMin,
+                        NextDate = dateAndTimeMax
+                    },
+                    commandType: System.Data.CommandType.StoredProcedure);
 
             }
+
+            // sort the entries by descending date - the default
+            entries = entries.OrderByDescending(e => e.DateAndTime).ToList();
+
+
             return entries;
         }
 

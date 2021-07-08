@@ -187,7 +187,7 @@ namespace Atypical.Data.Repositories.User
 
             using (var connection = new SqlConnection(ConnectionString))
             {
-                string sql = $"{Schema}.GetUserId";
+                string sql = $"{Schema}.GetUserById";
 
                 user = connection.Query<UserDto>(sql,
                     new { Id = id },
