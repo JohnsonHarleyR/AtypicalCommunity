@@ -1,11 +1,21 @@
 CREATE PROCEDURE [db_owner].CreateBankTable
 AS
 BEGIN
-	CREATE TABLE [db_owner].[Bank] (
-    UserId   INTEGER PRIMARY KEY,
-    Checking INT     DEFAULT (0) 
-                     NOT NULL,
-    Savings  INT     NOT NULL
-                     DEFAULT (100) 
-);
+	SET ANSI_NULLS ON;
+
+	SET QUOTED_IDENTIFIER ON;
+
+	CREATE TABLE [db_owner].[Bank](
+		[UserId] [int] NOT NULL,
+		[Checking] [int] NOT NULL,
+		[Savings] [int] NOT NULL,
+	PRIMARY KEY CLUSTERED 
+	(
+		[UserId] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+	) ON [PRIMARY];
+
+	ALTER TABLE [db_owner].[Bank] ADD  DEFAULT ((0)) FOR [Checking];
+
+	ALTER TABLE [db_owner].[Bank] ADD  DEFAULT ((100)) FOR [Savings];
 END

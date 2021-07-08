@@ -3,49 +3,41 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using Microsoft.Data.Sqlite;
+using System.Data.SqlClient;
+using Dapper;
+using System.Linq;
 
 namespace Atypical.Data.Repositories.User
 {
     public class UserRepository
     {
-        //private string schema = @"mood_diary";
+        private string Schema = @"[db_owner]";
         private string ConnectionString;
 
         public UserRepository()
         {
-            ConnectionString = ConfigurationManager.ConnectionStrings["SqliteConnection"].ConnectionString;
+            ConnectionString = ConfigurationManager.ConnectionStrings["Atypical"].ConnectionString;
         }
 
         // check if the table exists
         public bool TableExists()
         {
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            IEnumerable<UserDto> users;
+
+            using (var connection = new SqlConnection(ConnectionString))
             {
+                string sql = $"{Schema}.GetAllUsers";
 
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
-
-                string sql = $@"SELECT * FROM User";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-
-                connection.Open();
+                users = connection.Query<UserDto>(sql,
+                    commandType: System.Data.CommandType.StoredProcedure);
 
                 try
                 {
-                    using (SqliteDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            
-                            // success
+                    users = connection.Query<UserDto>(sql,
+                    commandType: System.Data.CommandType.StoredProcedure);
 
-                        }
-
-                        connection.Close();
-                        return true;
-                    }
+                    return true;
 
                 }
                 catch (Exception)
@@ -59,32 +51,12 @@ namespace Atypical.Data.Repositories.User
         // create table if it doesn't exist
         public void CreateTable()
         {
-            using (var connection = new SqliteConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+                string sql = $"{Schema}.CreateUserTable";
 
-                string sql = $@"CREATE TABLE User (
-    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-    `Username` VARCHAR(45) NOT NULL,
-  `FirstName` VARCHAR(45) NOT NULL,
-   'ProfileImageUrl' VARCHAR (50),
-  `DateOfBirth` DATETIME NOT NULL,
-  `Email` VARCHAR(50) NOT NULL,
-  `Password` VARCHAR(100) NOT NULL,
-  IsEmailConfirmed BOOLEAN       NOT NULL
-                                   DEFAULT (false),
-   IsAdmin BOOLEAN       NOT NULL
-                                   DEFAULT (false)
-);";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                connection.Open();
-
-                command.ExecuteNonQuery();
-
-                connection.Close();
-
+                connection.Execute(sql,
+                    commandType: System.Data.CommandType.StoredProcedure);
             }
         }
 
@@ -98,32 +70,24 @@ namespace Atypical.Data.Repositories.User
                 CreateTable();
             }
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+                string sql = $"{Schema}.AddUser";
 
-                string sql = $@"INSERT INTO User " +
-                    $@"(Username, FirstName, ProfileImageUrl, DateOfBirth, Email, Password, IsEmailConfirmed, IsAdmin)" +
-                    $@"VALUES (@Username, @FirstName, @ProfileImageUrl, @DateOfBirth, @Email, @Password, @IsEmailConfirmed, @IsAdmin)";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                command.Parameters.AddWithValue("@Username", userDto.Username);
-                command.Parameters.AddWithValue("@FirstName", userDto.FirstName);
-                command.Parameters.AddWithValue("@ProfileImageUrl", userDto.ProfileImageUrl);
-                command.Parameters.AddWithValue("@DateOfBirth", userDto.DateOfBirth);
-                command.Parameters.AddWithValue("@Email", userDto.Email);
-                command.Parameters.AddWithValue("@Password", userDto.Password);
-                command.Parameters.AddWithValue("@IsEmailConfirmed", userDto.IsEmailConfirmed);
-                command.Parameters.AddWithValue("@IsAdmin", userDto.IsAdmin);
-
-                connection.Open();
-
-                command.ExecuteNonQuery();
-
-                connection.Close();
-
+                connection.Execute(sql,
+                    new
+                    {
+                        FirstName = userDto.FirstName,
+                        ProfileImageUrl = userDto.ProfileImageUrl,
+                        DateOfBirth = userDto.DateOfBirth,
+                        Email = userDto.Email,
+                        Password = userDto.Password,
+                        IsEmailConfirmed = userDto.IsEmailConfirmed,
+                        UserType = (int)userDto.UserType
+                    },
+                    commandType: System.Data.CommandType.StoredProcedure);
             }
+
 
         }
 
@@ -137,34 +101,23 @@ namespace Atypical.Data.Repositories.User
                 CreateTable();
             }
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+                string sql = $"{Schema}.UpdateUser";
 
-                string sql = $@"UPDATE User " +
-                    "SET Username = @Username, FirstName = @FirstName, ProfileImageUrl = ProfileImageUrl, " +
-                    $@"DateOfBirth = @DateOfBirth, Email = @Email, Password = @Password, " + 
-                    $@"IsEmailConfirmed = @IsEmailConfirmed, IsAdmin = @IsAdmin " + 
-                    $@"WHERE Id = @Id";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                command.Parameters.AddWithValue("@Id", userDto.Id);
-                command.Parameters.AddWithValue("@Username", userDto.Username);
-                command.Parameters.AddWithValue("@FirstName", userDto.FirstName);
-                command.Parameters.AddWithValue("@ProfileImageUrl", userDto.ProfileImageUrl);
-                command.Parameters.AddWithValue("@DateOfBirth", userDto.DateOfBirth);
-                command.Parameters.AddWithValue("@Email", userDto.Email);
-                command.Parameters.AddWithValue("@Password", userDto.Password);
-                command.Parameters.AddWithValue("@IsEmailConfirmed", userDto.IsEmailConfirmed);
-                command.Parameters.AddWithValue("@IsAdmin", userDto.IsAdmin);
-
-                connection.Open();
-
-                command.ExecuteNonQuery();
-
-                connection.Close();
-
+                connection.Execute(sql,
+                    new
+                    {
+                        Id = userDto.Id,
+                        FirstName = userDto.FirstName,
+                        ProfileImageUrl = userDto.ProfileImageUrl,
+                        DateOfBirth = userDto.DateOfBirth,
+                        Email = userDto.Email,
+                        Password = userDto.Password,
+                        IsEmailConfirmed = userDto.IsEmailConfirmed,
+                        UserType = (int)userDto.UserType
+                    },
+                    commandType: System.Data.CommandType.StoredProcedure);
             }
 
         }
@@ -183,7 +136,7 @@ namespace Atypical.Data.Repositories.User
         /// Get all users in the database.
         /// </summary>
         /// <returns>List of userDto's from the database.</returns>
-        public List<UserDto> GetAllUsers()
+        public IEnumerable<UserDto> GetAllUsers()
         {
             // first check that table exists - if not, create the table
             if (!TableExists())
@@ -191,46 +144,17 @@ namespace Atypical.Data.Repositories.User
                 CreateTable();
             }
 
-            List<UserDto> users = new List<UserDto>();
+            IEnumerable<UserDto> users = new List<UserDto>();
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
+                string sql = $"{Schema}.GetAllUsers";
 
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
-
-                string sql = $@"SELECT * FROM User";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-
-                connection.Open();
-
-                using (SqliteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        users.Add(
-                            new UserDto()
-                            {
-                                Id = Int32.Parse(reader["Id"].ToString()),
-                                Username = reader["Username"].ToString(),
-                                FirstName = reader["FirstName"].ToString(),
-                                ProfileImageUrl = reader["ProfileImageUrl"].ToString(),
-                                DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString()),
-                                Email = reader["Email"].ToString(),
-                                Password = reader["Password"].ToString(),
-                                IsEmailConfirmed = GetBoolFromBit(reader["IsEmailConfirmed"].ToString()),
-                                IsAdmin = GetBoolFromBit(reader["IsAdmin"].ToString())
-                            });
-
-                        // TODO add all diary entries to user
-
-                    }
-
-                    connection.Close();
-                }
+                users = connection.Query<UserDto>(sql,
+                    commandType: System.Data.CommandType.StoredProcedure);
 
             }
+
             return users;
         }
 
@@ -261,44 +185,19 @@ namespace Atypical.Data.Repositories.User
 
             UserDto user = null;
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
+                string sql = $"{Schema}.GetUserId";
 
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
-
-                string sql = $@"SELECT * FROM User WHERE Id = @Id;";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                command.Parameters.AddWithValue("@Id", id);
-
-                connection.Open();
-
-                using (SqliteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-
-                        user = new UserDto()
-                        {
-                            Id = Int32.Parse(reader["Id"].ToString()),
-                            Username = reader["Username"].ToString(),
-                            FirstName = reader["FirstName"].ToString(),
-                            ProfileImageUrl = reader["ProfileImageUrl"].ToString(),
-                            DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString()),
-                            Email = reader["Email"].ToString(),
-                            Password = reader["Password"].ToString(),
-                            IsEmailConfirmed = GetBoolFromBit(reader["IsEmailConfirmed"].ToString()),
-                            IsAdmin = GetBoolFromBit(reader["IsAdmin"].ToString())
-                            //Entries = new List<EntryDto>() { }
-                        };
-                    }
-                    connection.Close();
-                }
-
-                // TODO add all diary entries to user
+                user = connection.Query<UserDto>(sql,
+                    new { Id = id },
+                    commandType: System.Data.CommandType.StoredProcedure)?.FirstOrDefault();
 
             }
+
+            // TODO add all diary entries to user
+
+
             return user;
         }
 
@@ -312,44 +211,19 @@ namespace Atypical.Data.Repositories.User
 
             UserDto user = null;
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
+                string sql = $"{Schema}.GetUserByUsername";
 
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
-
-                string sql = $@"SELECT * FROM User WHERE Username = @Username;";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                command.Parameters.AddWithValue("@Username", username);
-
-                connection.Open();
-
-                using (SqliteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-
-                        user = new UserDto()
-                        {
-                            Id = Int32.Parse(reader["Id"].ToString()),
-                            Username = reader["Username"].ToString(),
-                            FirstName = reader["FirstName"].ToString(),
-                            ProfileImageUrl = reader["ProfileImageUrl"].ToString(),
-                            DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString()),
-                            Email = reader["Email"].ToString(),
-                            Password = reader["Password"].ToString(),
-                            IsEmailConfirmed = GetBoolFromBit(reader["IsEmailConfirmed"].ToString()),
-                            IsAdmin = GetBoolFromBit(reader["IsAdmin"].ToString())
-                            //Entries = new List<EntryDto>() { }
-                        };
-                    }
-                    connection.Close();
-                }
-
-                // TODO add all diary entries to user (?)
+                user = connection.Query<UserDto>(sql,
+                    new { Username = username },
+                    commandType: System.Data.CommandType.StoredProcedure)?.FirstOrDefault();
 
             }
+
+            // TODO add all diary entries to user
+
+
             return user;
         }
 
@@ -364,48 +238,22 @@ namespace Atypical.Data.Repositories.User
 
             UserDto user = null;
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
+                string sql = $"{Schema}.GetUserByEmail";
 
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
-
-                string sql = $@"SELECT * FROM User WHERE Email = @Email;";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                command.Parameters.AddWithValue("@Email", email);
-
-                connection.Open();
-
-                using (SqliteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-
-                        user = new UserDto()
-                        {
-                            Id = Int32.Parse(reader["Id"].ToString()),
-                            Username = reader["Username"].ToString(),
-                            FirstName = reader["FirstName"].ToString(),
-                            ProfileImageUrl = reader["ProfileImageUrl"].ToString(),
-                            DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString()),
-                            Email = reader["Email"].ToString(),
-                            Password = reader["Password"].ToString(),
-                            IsEmailConfirmed = GetBoolFromBit(reader["IsEmailConfirmed"].ToString()),
-                            IsAdmin = GetBoolFromBit(reader["IsAdmin"].ToString())
-                            //Entries = new List<EntryDto>() { }
-                        };
-                    }
-                    connection.Close();
-                }
-
-                // TODO add all diary entries to user (?)
+                user = connection.Query<UserDto>(sql,
+                    new { Email = email },
+                    commandType: System.Data.CommandType.StoredProcedure)?.FirstOrDefault();
 
             }
+
+            // TODO add all diary entries to user
+
+
             return user;
+
         }
 
     }
-
-
 }

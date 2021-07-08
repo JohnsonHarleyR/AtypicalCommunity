@@ -33,7 +33,7 @@ namespace Atypical.Controllers
             }
 
             // now grab the list of entries for that user
-            List<EntryDto> userEntries = entryOrchestrator.GetAllUserEntries((int)Session["userId"]);
+            List<DiaryEntryDto> userEntries = entryOrchestrator.GetAllUserEntries((int)Session["userId"]);
 
             // if the list of entries is empty, redirect to page to create new entry
             if (userEntries == null)
@@ -55,7 +55,7 @@ namespace Atypical.Controllers
             }
 
             // grab the item from the list based on the index passed
-            EntryDto entry = userEntries[(int)index];
+            DiaryEntryDto entry = userEntries[(int)index];
 
             // if the item is null, redirect to the home page
             if (entry == null)
@@ -126,7 +126,7 @@ namespace Atypical.Controllers
             {
 
                 // Create the entry
-                EntryDto newEntry = new EntryDto()
+                DiaryEntryDto newEntry = new DiaryEntryDto()
                 {
                     UserId = model.UserId,
                     Happy = model.Happy,
@@ -189,7 +189,7 @@ namespace Atypical.Controllers
             }
 
             // now grab the correct entry from the orchestrator
-            EntryDto entry = entryOrchestrator.GetEntryById((int)id);
+            DiaryEntryDto entry = entryOrchestrator.GetEntryById((int)id);
 
             // if the entry is null, redirect to home page
             if (entry == null)
@@ -227,7 +227,7 @@ namespace Atypical.Controllers
             {
 
                 // Create the entry
-                EntryDto updatedEntry = new EntryDto()
+                DiaryEntryDto updatedEntry = new DiaryEntryDto()
                 {
                     Id = model.Id,
                     Happy = model.Happy,
@@ -253,7 +253,7 @@ namespace Atypical.Controllers
                     }
 
                     // otherwise, get a list of that user's entries to identify index 
-                    List<EntryDto> userEntries = entryOrchestrator.GetAllUserEntries((int)Session["userId"]);
+                    List<DiaryEntryDto> userEntries = entryOrchestrator.GetAllUserEntries((int)Session["userId"]);
 
                     // if the list of entries is empty, redirect regular view pagw
                     if (userEntries == null)

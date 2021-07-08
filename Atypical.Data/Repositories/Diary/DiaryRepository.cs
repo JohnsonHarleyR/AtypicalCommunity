@@ -4,48 +4,40 @@ using System.Collections.Generic;
 using System.Configuration;
 using Microsoft.Data.Sqlite;
 using System.Linq;
+using System.Data.SqlClient;
+using Dapper;
 
 namespace Atypical.Data.Repositories.Diary
 {
-    public class EntryRepository
+    public class DiaryRepository
     {
+        private string Schema = @"[db_owner]";
         private string ConnectionString;
 
-        public EntryRepository()
+        public DiaryRepository()
         {
-            ConnectionString = ConfigurationManager.ConnectionStrings["SqliteConnection"].ConnectionString;
+            ConnectionString = ConfigurationManager.ConnectionStrings["Atypical"].ConnectionString;
         }
 
         // check if the table exists
         public bool TableExists()
         {
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            IEnumerable<DiaryEntryDto> entries;
+
+            using (var connection = new SqlConnection(ConnectionString))
             {
+                string sql = $"{Schema}.GetAllDiaryEntries";
 
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
-
-                string sql = $@"SELECT * FROM Entry";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-
-                connection.Open();
+                entries = connection.Query<DiaryEntryDto>(sql,
+                    commandType: System.Data.CommandType.StoredProcedure);
 
                 try
                 {
-                    using (SqliteDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
+                    entries = connection.Query<DiaryEntryDto>(sql,
+                    commandType: System.Data.CommandType.StoredProcedure);
 
-                            // success
-
-                        }
-
-                        connection.Close();
-                        return true;
-                    }
+                    return true;
 
                 }
                 catch (Exception)
@@ -54,38 +46,18 @@ namespace Atypical.Data.Repositories.Diary
                 }
 
             }
+
         }
 
         // create table if it doesn't exist
         public void CreateTable()
         {
-            using (var connection = new SqliteConnection(ConnectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+                string sql = $"{Schema}.CreateDiaryTable";
 
-                string sql = $@"CREATE TABLE Entry (
-    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-        UserId INT NOT NULL,
-  'DateAndTime' DATETIME NOT NULL,
-  `Happy` INT NOT NULL,
-  `Sad` INT NOT NULL,
-  `Confident` INT NOT NULL,
-  `Mad` INT NOT NULL,
-  `Hopeful` INT NOT NULL,
-  `Scared` INT NOT NULL,
-  `Title` VARCHAR(100) NOT NULL,
-  `Text` BLOB NOT NULL,
-  FOREIGN KEY (UserId) REFERENCES User(Id)
-)";
-
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                connection.Open();
-
-                command.ExecuteNonQuery();
-
-                connection.Close();
-
+                connection.Execute(sql,
+                    commandType: System.Data.CommandType.StoredProcedure);
             }
         }
 
@@ -94,7 +66,7 @@ namespace Atypical.Data.Repositories.Diary
         /// Add a new diary entry.
         /// </summary>
         /// <param name="entryDto"></param>
-        public void AddEntry(EntryDto entryDto)
+        public void AddEntry(DiaryEntryDto entryDto)
         {
 
             // first check that table exists - if not, create the table
@@ -148,7 +120,7 @@ namespace Atypical.Data.Repositories.Diary
         /// Update a diary entry.
         /// </summary>
         /// <param name="entryDto"></param>
-        public void UpdateEntry(EntryDto entryDto)
+        public void UpdateEntry(DiaryEntryDto entryDto)
         {
             // first check that table exists - if not, create the table
             if (!TableExists())
@@ -200,7 +172,7 @@ namespace Atypical.Data.Repositories.Diary
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public List<EntryDto> GetEntriesByUserId(int userId)
+        public List<DiaryEntryDto> GetEntriesByUserId(int userId)
         {
             // first check that table exists - if not, create the table
             if (!TableExists())
@@ -208,7 +180,7 @@ namespace Atypical.Data.Repositories.Diary
                 CreateTable();
             }
 
-            List<EntryDto> entries = new List<EntryDto>();
+            List<DiaryEntryDto> entries = new List<DiaryEntryDto>();
 
             using (var connection = new SqliteConnection(ConnectionString))
             {
@@ -228,7 +200,7 @@ namespace Atypical.Data.Repositories.Diary
                     while (reader.Read())
                     {
                         entries.Add(
-                            new EntryDto()
+                            new DiaryEntryDto()
                             {
                                 Id = Int32.Parse(reader["Id"].ToString()),
                                 UserId = Int32.Parse(reader["UserId"].ToString()),
@@ -261,7 +233,7 @@ namespace Atypical.Data.Repositories.Diary
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public EntryDto GetEntryById(int id)
+        public DiaryEntryDto GetEntryById(int id)
         {
             // first check that table exists - if not, create the table
             if (!TableExists())
@@ -269,7 +241,7 @@ namespace Atypical.Data.Repositories.Diary
                 CreateTable();
             }
 
-            EntryDto entry = null;
+            DiaryEntryDto entry = null;
 
             using (var connection = new SqliteConnection(ConnectionString))
             {
@@ -289,7 +261,7 @@ namespace Atypical.Data.Repositories.Diary
                     while (reader.Read())
                     {
 
-                        entry = new EntryDto()
+                        entry = new DiaryEntryDto()
                         {
                             Id = Int32.Parse(reader["Id"].ToString()),
                             UserId = Int32.Parse(reader["UserId"].ToString()),
@@ -318,7 +290,7 @@ namespace Atypical.Data.Repositories.Diary
         /// <param name="userId"></param>
         /// <param name="dateAndTime"></param>
         /// <returns></returns>
-        public List<EntryDto> GetEntriesByDate(int userId, DateTime dateAndTime)
+        public List<DiaryEntryDto> GetEntriesByDate(int userId, DateTime dateAndTime)
         {
 
             // first check that table exists - if not, create the table
@@ -327,7 +299,7 @@ namespace Atypical.Data.Repositories.Diary
                 CreateTable();
             }
 
-            List<EntryDto> entries = new List<EntryDto>();
+            List<DiaryEntryDto> entries = new List<DiaryEntryDto>();
 
             DateTime date = new DateTime(dateAndTime.Year, dateAndTime.Month, dateAndTime.Day,
                 0, 0, 0);
@@ -354,7 +326,7 @@ namespace Atypical.Data.Repositories.Diary
                     while (reader.Read())
                     {
                         entries.Add(
-                            new EntryDto()
+                            new DiaryEntryDto()
                             {
                                 Id = Int32.Parse(reader["Id"].ToString()),
                                 UserId = Int32.Parse(reader["UserId"].ToString()),
@@ -389,7 +361,7 @@ namespace Atypical.Data.Repositories.Diary
         /// <param name="dateAndTimeMin"></param>
         /// <param name="dateAndTimeMax"></param>
         /// <returns></returns>
-        public List<EntryDto> GetEntriesByDateRange(int userId, DateTime dateAndTimeMin, DateTime dateAndTimeMax)
+        public List<DiaryEntryDto> GetEntriesByDateRange(int userId, DateTime dateAndTimeMin, DateTime dateAndTimeMax)
         {
 
             // first check that table exists - if not, create the table
@@ -398,7 +370,7 @@ namespace Atypical.Data.Repositories.Diary
                 CreateTable();
             }
 
-            List<EntryDto> entries = new List<EntryDto>();
+            List<DiaryEntryDto> entries = new List<DiaryEntryDto>();
 
             using (var connection = new SqliteConnection(ConnectionString))
             {
@@ -421,7 +393,7 @@ namespace Atypical.Data.Repositories.Diary
                     while (reader.Read())
                     {
                         entries.Add(
-                            new EntryDto()
+                            new DiaryEntryDto()
                             {
                                 Id = Int32.Parse(reader["Id"].ToString()),
                                 UserId = Int32.Parse(reader["UserId"].ToString()),

@@ -83,7 +83,7 @@
     <Compile Include="NativeLibraryHack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Bank\BankRepository.cs" />
-    <Compile Include="Repositories\Diary\EntryRepository.cs" />
+    <Compile Include="Repositories\Diary\DiaryRepository.cs" />
     <Compile Include="Repositories\User\UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -97,7 +97,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TableCreation\EntryTable_SQL.txt" />
+    <Content Include="TableCreation\DiaryTable_SQL.txt" />
     <Content Include="TableCreation\BankTable_SQL.txt" />
     <Content Include="TableCreation\UserTable_SQL.txt" />
   </ItemGroup>

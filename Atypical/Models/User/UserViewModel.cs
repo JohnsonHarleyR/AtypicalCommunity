@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using CompareAttribute = System.ComponentModel.DataAnnotations.CompareAttribute;
 using Atypical.Crosscutting.Dtos.User;
+using Atypical.Crosscutting.Enums;
 
 namespace Atypical.Web.Models.User
 {
@@ -30,7 +31,7 @@ namespace Atypical.Web.Models.User
         public string ConfirmPassword { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
-        public bool IsAdmin { get; set; }
+        public UserType UserType { get; set; }
 
 
         public UserViewModel() { }
@@ -44,7 +45,8 @@ namespace Atypical.Web.Models.User
             Email = userDto.Email;
             Password = userDto.Password;
             IsEmailConfirmed = userDto.IsEmailConfirmed;
-            IsAdmin = userDto.IsAdmin;
+            UserType = (UserType)userDto.UserType;
+
         }
     }
 }

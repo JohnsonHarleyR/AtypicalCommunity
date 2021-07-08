@@ -15,7 +15,7 @@ namespace Atypical.Helpers
         public static bool HasEntryToday(int userId)
         {
             // grab any entries from today
-            List<EntryDto> entries = entryOrchestrator.GetUserEntriesByDate(userId, DateTime.Now);
+            List<DiaryEntryDto> entries = entryOrchestrator.GetUserEntriesByDate(userId, DateTime.Now);
 
             // if the list is null or empty, return false
             if (entries == null || entries.Count == 0)
@@ -31,7 +31,7 @@ namespace Atypical.Helpers
         public static bool HasEntryOnDate(int userId, DateTime date)
         {
             // grab any entries from today
-            List<EntryDto> entries = entryOrchestrator.GetUserEntriesByDate(userId, date);
+            List<DiaryEntryDto> entries = entryOrchestrator.GetUserEntriesByDate(userId, date);
 
             // if the list is null or empty, return false
             if (entries == null || entries.Count == 0)

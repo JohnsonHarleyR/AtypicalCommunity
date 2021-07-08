@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="Dtos\Bank\BankAccountDto.cs" />
     <Compile Include="Dtos\Diary\ChartNodeDto.cs" />
-    <Compile Include="Dtos\Diary\EntryDto.cs" />
+    <Compile Include="Dtos\Diary\DiaryEntryDto.cs" />
     <Compile Include="Dtos\Diary\FullChartDto.cs" />
     <Compile Include="Dtos\User\UserDto.cs" />
     <Compile Include="Enums\CoinEnums.cs" />

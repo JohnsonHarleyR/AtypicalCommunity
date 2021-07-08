@@ -1,4 +1,4 @@
-﻿CREATE TABLE Entry (
+﻿CREATE TABLE [db_owner].Diary (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
         UserId INT NOT NULL,
   'DateAndTime' DATETIME NOT NULL,
