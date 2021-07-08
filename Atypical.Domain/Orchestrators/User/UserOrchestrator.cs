@@ -8,6 +8,7 @@ using Atypical.Crosscutting.Dtos.User;
 using System.Security.Cryptography;
 using System.Net;
 using System.Net.Mail;
+using SQLitePCL;
 
 namespace Atypical.Domain.Orchestrators.User
 {
@@ -22,6 +23,11 @@ namespace Atypical.Domain.Orchestrators.User
         }
 
  
+
+        public void SqliteHack()
+        {
+            NativeLibraryHack.DoHack();
+        }
 
 
         // Create a new User

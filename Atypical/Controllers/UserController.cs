@@ -152,7 +152,7 @@ namespace Atypical.Controllers
                     };
 
                     // HACK for now, just make email confirmed until we can get email sending working
-                    newUser.IsEmailConfirmed = true;
+                    //newUser.IsEmailConfirmed = true;
 
                     // validate success
                     bool successfullyCreatedUser = userOrchestrator.CreateUser(newUser);
@@ -162,6 +162,9 @@ namespace Atypical.Controllers
 
                         Session["username"] = newUser.Username;
                         Session["userId"] = userOrchestrator.GetUserIdByEmail(newUser.Email);
+
+                        // send email confirmation
+                        EmailHelper.SendConfirmationEmail(newUser.Email, (int)Session["userId"]);
 
                         // TODO Find a way to alert the user that their account was created successfully
 

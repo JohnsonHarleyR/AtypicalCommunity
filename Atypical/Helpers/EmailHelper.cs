@@ -9,6 +9,8 @@ using System.Text;
 using MimeKit;
 using Atypical.Crosscutting.Enums;
 using MailKit.Net.Smtp;
+using System.Diagnostics;
+using System.IO;
 
 namespace Atypical.Web.Helpers
 {
@@ -96,6 +98,31 @@ namespace Atypical.Web.Helpers
             // create message to send
             string title = "Atypical: Password Reset";
             string message = $"<b>Code to reset your password:</b><h3>{code}</h3>";
+
+            // send the message, store result as a bool
+            //Task<bool> successful = SendEmail(receiverEmail, title, message);
+            bool successful = SendEmail(receiverEmail, title, message);
+
+            // return result of sendEmail
+            //return successful.IsCompleted;
+            return successful;
+        }
+
+        // Send confirmation email
+        public static bool SendConfirmationEmail(string receiverEmail, int? userId)
+        {
+            // if there's not enough info to send the email, return false
+            if (receiverEmail == null || userId == null)
+            {
+                return false;
+            }
+
+            // create message to send
+            var location = System.Reflection.Assembly.GetEntryAssembly().Location;
+            var directory = System.IO.Path.GetDirectoryName(location);
+            var link = $@"{directory}\User\ConfirmEmail?Id={userId}";
+            string title = "Atypical: Confirm Your Account";
+            string message = $"<a href=\"{link}\">Click here to confirm your account.</a>";
 
             // send the message, store result as a bool
             //Task<bool> successful = SendEmail(receiverEmail, title, message);
