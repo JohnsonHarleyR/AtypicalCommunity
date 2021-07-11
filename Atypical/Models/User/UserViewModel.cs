@@ -3,17 +3,20 @@ using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using CompareAttribute = System.ComponentModel.DataAnnotations.CompareAttribute;
 using Atypical.Crosscutting.Dtos.User;
+using Atypical.Crosscutting.Enums;
 
 namespace Atypical.Web.Models.User
 {
     public class UserViewModel
     {
+        public int Id { get; set; }
         [Required]
         [Remote("UsernameExists", "User", HttpMethod = "POST", ErrorMessage = "Username already exists.")]
         public string Username { get; set; }
         [Required]
         public string FirstName { get; set; }
         public string ProfileImageUrl { get; set; }
+        // TODO add validation that user is at least 13
         [Required]
         public DateTime DateOfBirth { get; set; }
         [Required]
@@ -29,7 +32,8 @@ namespace Atypical.Web.Models.User
         public string ConfirmPassword { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
-        public bool IsAdmin { get; set; }
+        public string UserType { get; set; }
+        public string AccountStatus { get; set; }
 
 
         public UserViewModel() { }
@@ -43,7 +47,8 @@ namespace Atypical.Web.Models.User
             Email = userDto.Email;
             Password = userDto.Password;
             IsEmailConfirmed = userDto.IsEmailConfirmed;
-            IsAdmin = userDto.IsAdmin;
+            UserType = userDto.UserType.ToString();
+            AccountStatus = userDto.AccountStatus.ToString();
         }
     }
 }

@@ -15,6 +15,7 @@ namespace Atypical.Web.Controllers
 
         public ActionResult Index()
         {
+
             if (Session["username"] != null)
             {
                 UserDto userDto = userOrchestrator.GetUserById(Int32.Parse(Session["userId"].ToString()));

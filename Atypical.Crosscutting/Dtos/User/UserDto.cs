@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Atypical.Crosscutting.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace Atypical.Crosscutting.Dtos.User
         public string Password { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
-        public bool IsAdmin { get; set; }
+        public UserType UserType { get; set; }
+        public AccountStatus AccountStatus { get; set; }
     }
 }

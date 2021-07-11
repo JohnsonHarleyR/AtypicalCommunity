@@ -5,6 +5,9 @@
     ViewBag.Title = "Create User";
 }
 
+<!-- TODO set up a way to crop the user profile photo 
+    HACK For now the user uploads a photo, but eventually there will be avatar makers-->
+
 <h2>Create User</h2>
 
 @using (Html.BeginForm("Create", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -41,7 +44,8 @@
         <div class="form-group">
             <div class="control-label col-md-2">Date of Birth:</div>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.DateOfBirth)
+                <input type="date" name="DateOfBirth" class="date" />
+                @*@Html.EditorFor(model => model.DateOfBirth)*@
                 @Html.ValidationMessageFor(model => model.DateOfBirth)
             </div>
         </div>

@@ -1,0 +1,19 @@
+﻿@using Atypical.Web.Models.Bank
+@model BankAccountViewModel
+
+<span id="money">
+    <!-- Only show content if there is a user in the session -->
+    @if (Session["username"] != null)
+    {
+        <text>
+
+            <label id="moneyLabel">Coin: </label>
+            <a href=""><span id="coinAmount"></span></a>
+        </text>
+    }
+
+    <!--TODO get this working correctly-->
+</span>
+
+
+@Scripts.Render("~/bundles/importantjs")

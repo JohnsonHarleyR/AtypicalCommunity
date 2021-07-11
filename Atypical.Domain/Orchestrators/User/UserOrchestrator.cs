@@ -21,8 +21,6 @@ namespace Atypical.Domain.Orchestrators.User
             userRepository = new UserRepository();
         }
 
- 
-
 
         // Create a new User
         public bool CreateUser(UserDto userDto)
@@ -63,7 +61,7 @@ namespace Atypical.Domain.Orchestrators.User
         // Get all userDto's
         public List<UserDto> GetAllUsers()
         {
-            List<UserDto> userDtos = userRepository.GetAllUsers();
+            List<UserDto> userDtos = (List<UserDto>)userRepository.GetAllUsers();
 
             if (userDtos == null)
             {

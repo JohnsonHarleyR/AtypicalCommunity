@@ -1,4 +1,5 @@
 ﻿using Atypical.Crosscutting.Dtos.User;
+using Atypical.Crosscutting.Enums;
 using Atypical.Domain.Orchestrators.User;
 using Atypical.Web.Helpers;
 using Atypical.Web.Models.User;
@@ -15,8 +16,10 @@ using System.Web.Mvc;
 namespace Atypical.Controllers
 {
     // TODO Allow user to edit their details
-    // TODO Allow user to confirm their account (there's a link about doing this in bookmarks?)
-    // TODO Allow user to reset their password (there's a link about doing this in bookmarks?)
+    // TODO Add admin privledges for admins
+    // TODO Allow account suspensions and freezes
+    // TODO Add user activity logs
+    // TODO Add admin activity logs
 
     public class UserController : Controller
     {
@@ -126,6 +129,8 @@ namespace Atypical.Controllers
 
                     // Use hash to add security to the password
                     string hashPassword = userOrchestrator.SecurePassword(model.Password);
+                    // set the model password to this hashpassword
+                    model.Password = hashPassword;
 
                     // try to upload the filepath
                     bool successful = UserHelper.SaveImage(ProfileImageFile);
@@ -140,16 +145,10 @@ namespace Atypical.Controllers
                         model.ProfileImageUrl = "/Images/" + ProfileImageFile.FileName;
                     }
 
-                    UserDto newUser = new UserDto()
-                    {
-                        Username = model.Username,
-                        FirstName = model.FirstName,
-                        ProfileImageUrl = model.ProfileImageUrl,
-                        DateOfBirth = model.DateOfBirth,
-                        Email = model.Email,
-                        Password = hashPassword, // add secure password to database
-                        IsEmailConfirmed = model.IsEmailConfirmed
-                    };
+                    UserDto newUser = UserHelper.ConvertUserModelToDto(model);
+
+                    // HACK for now, just make email confirmed until we can get email sending working
+                    //newUser.IsEmailConfirmed = true;
 
                     // validate success
                     bool successfullyCreatedUser = userOrchestrator.CreateUser(newUser);
@@ -159,6 +158,9 @@ namespace Atypical.Controllers
 
                         Session["username"] = newUser.Username;
                         Session["userId"] = userOrchestrator.GetUserIdByEmail(newUser.Email);
+
+                        // send email confirmation
+                        EmailHelper.SendConfirmationEmail(newUser.Email, (int)Session["userId"]);
 
                         // TODO Find a way to alert the user that their account was created successfully
 
@@ -175,6 +177,25 @@ namespace Atypical.Controllers
 
             // If the model view wasn't valid, return them to the create page
             return View(model);
+        }
+
+        public ActionResult SendConfirmation(int? id)
+        {
+            if (id != null)
+            {
+                // try to grab user
+                UserDto user = userOrchestrator.GetUserById((int)id);
+
+                if (user != null)
+                {
+                    // send email confirmation
+                    EmailHelper.SendConfirmationEmail(user.Email, (int)Session["userId"]);
+                }
+            }
+
+            // now redirect back
+            return RedirectToAction("ConfirmEmail", "Error");
+
         }
 
 
@@ -218,131 +239,64 @@ namespace Atypical.Controllers
             return View(model);
         }
 
+        public ActionResult ConfirmEmail(int? id)
+        {
+            // try to grab the user
+            UserDto user = userOrchestrator.GetUserById((int)id);
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult SendCode(ForgotPasswordViewModel model)
-        //{
+            // if it's null or user isn't logged in, redirect to home page
+            // if the id doesn't match the session, redirect, too
+            if (id == null || user == null || Session["username"] == null
+                || Session["userId"] == null ||
+                (int)Session["userId"] != id || user.IsEmailConfirmed == true)
+            {
 
-        //    // create a verification code
-        //    string code = "code"; // TODO turn to real code generated
+                return RedirectToAction("Index", "Home");
+            }
 
-        //    // get the user to send the email
-        //    UserDto user = userOrchestrator.GetUserByEmail(model.Email);
+            // otherwise, confirm their email and update the user
+            user.IsEmailConfirmed = true;
+            userOrchestrator.UpdateUser(user);
 
-        //    if (user != null)
-        //    {
-        //        // Send a message to their email with the verification code
-        //        bool sendSuccessful = EmailHelper.SendResetCode(user, code);
+            // direct them to a page saying their email was confirmed
+            return View();
 
-        //        // if it worked
-        //        if (sendSuccessful)
-        //        {
-        //            // put the code into the session
-        //            Session["resetCode"] = code;
-        //            Session["codeEmail"] = model.Email;
+        }
 
-        //            return RedirectToAction("CheckCode", "User");
-        //        }
-
-        //    }
-        //    // otherwise, return to login and let user know there was an error
-        //    return RedirectToAction("Login", "User", new { message = "Could not send email." });
-
-        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SendCode(ForgotPasswordViewModel model)
+        public ActionResult SendCode(ForgotPasswordViewModel model)
         {
 
-            if (ModelState.IsValid)
+            // create a verification code
+            string code = EmailHelper.GenerateCode(10); // TODO turn to real code generated
+
+            // get the user to send the email
+            UserDto user = userOrchestrator.GetUserByEmail(model.Email);
+
+            if (user != null)
             {
-                // create a verification code
-                string code = "code"; // TODO turn to real code generated
+                // Send a message to their email with the verification code
+                bool sendSuccessful = EmailHelper.SendResetCode(user.Email, code);
 
-                // get the user to send the email
-                UserDto user = userOrchestrator.GetUserByEmail(model.Email);
-
-                if (user != null)
+                // if it worked
+                if (sendSuccessful)
                 {
-                    // Send a message to their email with the verification code
+                    // put the code into the session
+                    Session["resetCode"] = code;
+                    Session["codeEmail"] = model.Email;
 
-                    // create message to send
-                    string title = "Password Reset Code";
-                    string message = $"Test send!<br><br>Code: {code}";
-                    MailMessage email = EmailHelper.CreateEmail(user, title, message);
-
-                    // create smtp client
-                    using (var smtp = EmailHelper.GetSmtpClient()) // will set it up
-                    {
-                        // send email
-                        try
-                        {
-                            // HACK For now skip this part until we can get it working
-
-                            //await smtp.SendMailAsync(email);
-
-                            // put the code into the session
-                            Session["resetCode"] = code;
-                            Session["codeEmail"] = model.Email;
-
-                            // return true after this is done
-                            return RedirectToAction("CheckCode", "User");
-                        }
-                        catch (SmtpFailedRecipientsException ex)
-                        {
-                            for (int i = 0; i < ex.InnerExceptions.Length; i++)
-                            {
-                                SmtpStatusCode status = ex.InnerExceptions[i].StatusCode;
-                                if (status == SmtpStatusCode.MailboxBusy ||
-                                    status == SmtpStatusCode.MailboxUnavailable)
-                                {
-                                    Console.WriteLine("Delivery failed - retrying in 5 seconds.");
-                                    System.Threading.Thread.Sleep(5000);
-                                    await smtp.SendMailAsync(email);
-
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Failed to deliver message to {0}",
-                                        ex.InnerExceptions[i].FailedRecipient);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-
-                            string messageString = 
-                                $"Exception caught in RetryIfBusy(): {ex.ToString()}";
-
-                            return RedirectToAction("Login", "User", new { message = messageString });
-                        }
-                        // go to next page
-                        
-                    }
-
-
-                    //bool sendSuccessful = EmailHelper.SendResetCode(user, code);
-
-                    //// if it worked
-                    //if (sendSuccessful)
-                    //{
-                    //    // put the code into the session
-                    //    Session["resetCode"] = code;
-                    //    Session["codeEmail"] = model.Email;
-
-                    //    return RedirectToAction("CheckCode", "User");
-                    //}
-
+                    return RedirectToAction("CheckCode", "User");
                 }
 
             }
-
             // otherwise, return to login and let user know there was an error
             return RedirectToAction("Login", "User", new { message = "Could not send email." });
 
         }
+
+        
 
 
         public ActionResult CheckCode()

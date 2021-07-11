@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Atypical.Web.Models.Bank
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -19,7 +21,7 @@
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">
+                        <a class="nav-link active" href="/Home/Index">
                             Home
                             <span class="visually-hidden">(current)</span>
                         </a>
@@ -37,8 +39,10 @@
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown dropdown-toggle" data-bs-toggle="dropdown"
-                               role="button" aria-haspopup="true" aria-expanded="false">Diary
-                            <i class="fa fa-caret-down"></i></a>
+                               role="button" aria-haspopup="true" aria-expanded="false" href="/Entry/View">
+                                Diary
+                                <i class="fa fa-caret-down"></i>
+                            </a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="/Entry/View">View</a>
                                 <a class="dropdown-item" href="/Entry/New">New Entry</a>
@@ -61,10 +65,29 @@
                         </div>
                     </li>
                 </ul>
-                <form class="d-flex">
-                    <input class="form-control me-sm-2" type="text" placeholder="Search">
-                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-                </form>
+
+                <div class="d-flex">
+                    <div id="userTypeDiv">
+                        @if (Session["username"] != null)
+                        {
+                        <span id="userType">Test</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="d-flex">
+                    <div id="moneyDiv">
+                        @if (Session["username"] != null)
+                        {
+                            <text>
+
+                                <label id="moneyLabel">Coin: </label>
+                                <a href=""><span id="coinAmount"></span></a>
+                            </text>
+                        }
+                    </div>
+                </div>
+
             </div>
         </div>
     </nav>
@@ -80,6 +103,7 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/importantjs")
     @RenderSection("scripts", required: false)
 
 

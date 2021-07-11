@@ -44,10 +44,14 @@
   <ItemGroup>
     <Compile Include="Dtos\Bank\BankAccountDto.cs" />
     <Compile Include="Dtos\Diary\ChartNodeDto.cs" />
-    <Compile Include="Dtos\Diary\EntryDto.cs" />
+    <Compile Include="Dtos\Diary\DiaryEntryDto.cs" />
     <Compile Include="Dtos\Diary\FullChartDto.cs" />
     <Compile Include="Dtos\User\UserDto.cs" />
+    <Compile Include="Enums\CoinEnums.cs" />
     <Compile Include="Enums\DiaryEnums.cs" />
+    <Compile Include="Enums\EmailEnums.cs" />
+    <Compile Include="Enums\LogEnums.cs" />
+    <Compile Include="Enums\UserEnums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -3,7 +3,9 @@ using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
+using Dapper;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,12 +13,55 @@ namespace Atypical.Data.Repositories.Bank
 {
     public class BankRepository
     {
+        private string Schema = @"[db_owner]";
         private string ConnectionString;
 
         public BankRepository()
         {
-            ConnectionString = ConfigurationManager.ConnectionStrings["SqliteConnection"].ConnectionString;
+            ConnectionString = ConfigurationManager.ConnectionStrings["Atypical"].ConnectionString;
         }
+
+        // check if the table exists
+        public bool TableExists()
+        {
+
+            IEnumerable<BankAccountDto> accounts;
+
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                string sql = $"{Schema}.GetAllBankAccounts";
+
+                accounts = connection.Query<BankAccountDto>(sql,
+                    commandType: System.Data.CommandType.StoredProcedure);
+
+                try
+                {
+                    accounts = connection.Query<BankAccountDto>(sql,
+                    commandType: System.Data.CommandType.StoredProcedure);
+
+                    return true;
+
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+            }
+        }
+
+        // create table if it doesn't exist
+        public void CreateTable()
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                string sql = $"{Schema}.CreateBankTable";
+
+                connection.Execute(sql,
+                    commandType: System.Data.CommandType.StoredProcedure);
+            }
+        }
+
 
         /// <summary>
         /// Grab an entry based on the entry's Id.
@@ -25,37 +70,25 @@ namespace Atypical.Data.Repositories.Bank
         /// <returns></returns>
         public BankAccountDto GetAccountByUserId(int userId)
         {
-            BankAccountDto account = null;
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            // first check that table exists - if not, create the table
+            if (!TableExists())
             {
+                CreateTable();
+            }
 
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+            BankAccountDto account;
 
-                string sql = $@"SELECT * FROM Bank WHERE UserId = @UserId;";
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                string sql = $"{Schema}.GetBankAccountByUserId";
 
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                command.Parameters.AddWithValue("@UserId", userId);
-
-                connection.Open();
-
-                using (SqliteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-
-                        account = new BankAccountDto()
-                        {
-                            UserId = Int32.Parse(reader["UserId"].ToString()),
-                            Checking = Double.Parse(reader["Checking"].ToString()),
-                            Savings = Double.Parse(reader["Savings"].ToString())
-                        };
-                    }
-                    connection.Close();
-                }
+                account = connection.Query<BankAccountDto>(sql,
+                    new { UserId = userId },
+                    commandType: System.Data.CommandType.StoredProcedure)?.FirstOrDefault();
 
             }
+
             return account;
         }
 
@@ -67,28 +100,24 @@ namespace Atypical.Data.Repositories.Bank
         public void AddAccount(BankAccountDto accountDto)
         {
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            // first check that table exists - if not, create the table
+            if (!TableExists())
             {
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+                CreateTable();
+            }
 
-                string sql = $@"INSERT INTO Bank " +
-                    $@"(UserId, Checking, Savings)" +
-                    $@"VALUES (@UserId, @Checking, @Savings)";
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                string sql = $"{Schema}.AddBankAccount";
 
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                // TODO Decide if there should be anything that can't be null - there probably should be lol
-
-                command.Parameters.AddWithValue("@UserId", accountDto.UserId);
-                command.Parameters.AddWithValue("@Checking", accountDto.Checking);
-                command.Parameters.AddWithValue("@Savings", accountDto.Savings);
-
-                connection.Open();
-
-                command.ExecuteNonQuery();
-
-                connection.Close();
-
+                connection.Execute(sql,
+                    new
+                    {
+                        UserId = accountDto.UserId,
+                        Checking = accountDto.Checking,
+                        Savings = accountDto.Savings
+                    },
+                    commandType: System.Data.CommandType.StoredProcedure);
             }
 
         }
@@ -100,28 +129,24 @@ namespace Atypical.Data.Repositories.Bank
         public void UpdateAccount(BankAccountDto accountDto)
         {
 
-            using (var connection = new SqliteConnection(ConnectionString))
+            // first check that table exists - if not, create the table
+            if (!TableExists())
             {
-                SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+                CreateTable();
+            }
 
-                string sql = $@"UPDATE Bank " +
-                    $@"SET Checking = @Checking, Savings = @Savings " +
-                    $@"WHERE UserId = @UserId;";
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                string sql = $"{Schema}.UpdateBankAccount";
 
-                SqliteCommand command = new SqliteCommand(sql, connection);
-
-                command.Parameters.AddWithValue("@UserId", accountDto.UserId);
-
-                command.Parameters.AddWithValue("@Checking", accountDto.Checking);
-
-                command.Parameters.AddWithValue("@Savings", accountDto.Savings);
-
-                connection.Open();
-
-                command.ExecuteNonQuery();
-
-                connection.Close();
-
+                connection.Execute(sql,
+                    new
+                    {
+                        UserId = accountDto.UserId,
+                        Checking = accountDto.Checking,
+                        Savings = accountDto.Savings
+                    },
+                    commandType: System.Data.CommandType.StoredProcedure);
             }
 
         }

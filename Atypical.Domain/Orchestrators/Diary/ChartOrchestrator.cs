@@ -9,7 +9,7 @@ namespace Atypical.Domain.Orchestrators.Diary
 {
     public class ChartOrchestrator
     {
-        private EntryRepository entryRepository = new EntryRepository();
+        private DiaryRepository entryRepository = new DiaryRepository();
 
 
         // Create a chart based on a week's data starting from a given date
@@ -24,7 +24,7 @@ namespace Atypical.Domain.Orchestrators.Diary
             //DateTime endDate = startDate.AddDays(7);
 
             // get the entries based on the userId and start date
-            List<EntryDto> entries = entryRepository.GetEntriesByDateRange(userId, startDate.Date,
+            List<DiaryEntryDto> entries = (List<DiaryEntryDto>)entryRepository.GetEntriesByDateRange(userId, startDate.Date,
                 endDate.Date);
 
             entries.OrderByDescending(e => e.DateAndTime);
@@ -52,7 +52,7 @@ namespace Atypical.Domain.Orchestrators.Diary
                 ChartNodeDto newNode = new ChartNodeDto();
 
                 // first, get a list of all entries from this day
-                List<EntryDto> dayEntries = entryRepository.GetEntriesByDate(userId, cycleDate);
+                List<DiaryEntryDto> dayEntries = (List<DiaryEntryDto>)entryRepository.GetEntriesByDate(userId, cycleDate);
                 //IEnumerable<EntryDto> dayEntries = (List<EntryDto>)(from e in entries
                 //                            where e.DateAndTime.Day.Equals(cycleDate.Day) select e);
 
@@ -95,7 +95,7 @@ namespace Atypical.Domain.Orchestrators.Diary
         public DateTime? GetNewestEntryDate(int userId)
         {
             // get a list of entries based on the userId
-            List<EntryDto> allEntries = entryRepository.GetEntriesByUserId(userId);
+            List<DiaryEntryDto> allEntries = (List<DiaryEntryDto>)entryRepository.GetEntriesByUserId(userId);
 
             // if the returned list is null or empty, return null
             if (allEntries == null)
@@ -117,7 +117,7 @@ namespace Atypical.Domain.Orchestrators.Diary
         }
 
         // Find the average of a mood from a list, based on the chosen mood
-        public double? GetMoodAverage(EMood mood, IEnumerable<EntryDto> data)
+        public double? GetMoodAverage(EMood mood, IEnumerable<DiaryEntryDto> data)
         {
             // if the list is null, throw an exception
             if (data == null)

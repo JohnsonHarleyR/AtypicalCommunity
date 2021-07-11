@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Atypical.Crosscutting.Dtos.Diary
 {
-    public class EntryDto
+    public class DiaryEntryDto
     {
         public int Id { get; set; }
         public int UserId { get; set; }

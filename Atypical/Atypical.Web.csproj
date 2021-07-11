@@ -136,6 +136,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AjaxController.cs" />
     <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\ChartController.cs" />
     <Compile Include="Controllers\EntryController.cs" />
@@ -146,7 +147,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ChartHelper.cs" />
+    <Compile Include="Helpers\CoinHelper.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
+    <Compile Include="Helpers\EntryHelper.cs" />
     <Compile Include="Helpers\UserHelper.cs" />
     <Compile Include="Models\Bank\BankAccountViewModel.cs" />
     <Compile Include="Models\Diary\ChartNodeViewModel.cs" />
@@ -183,8 +186,10 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\user-rules.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\mood-display.js" />
+    <Content Include="Scripts\user-info.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -204,15 +209,17 @@
     <Content Include="Views\Entry\Edit.cshtml" />
     <Content Include="Views\Chart\Weekly.cshtml" />
     <Content Include="Views\Error\ConfirmEmail.cshtml" />
-    <Content Include="Views\User\Confirm.cshtml" />
+    <Content Include="Views\User\ConfirmEmail.cshtml" />
     <Content Include="Views\User\ForgotPassword.cshtml" />
     <Content Include="Views\User\NewPassword.cshtml" />
     <Content Include="Views\User\CheckCode.cshtml" />
+    <Content Include="Views\Shared\_Money.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Images\" />
     <Folder Include="MailDrop\" />
+    <Folder Include="Views\Ajax\" />
     <Folder Include="Views\Bank\" />
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,8 @@ using Atypical.Crosscutting.Dtos.Diary;
 using Atypical.Web.Models.Diary;
 using Atypical.Domain.Orchestrators.User;
 using Atypical.Crosscutting.Dtos.User;
+using Atypical.Helpers;
+using Atypical.Crosscutting.Enums;
 
 namespace Atypical.Controllers
 {
@@ -22,6 +24,8 @@ namespace Atypical.Controllers
         // View a particular entry
         public ActionResult View(int? index)
         {
+            // TODO if they just created an entry, generate message with how many days in a row and coin bonus
+
             //first check if the session has a user - if it doesn't, go to login page
             if (Session["username"] == null)
             {
@@ -29,7 +33,7 @@ namespace Atypical.Controllers
             }
 
             // now grab the list of entries for that user
-            List<EntryDto> userEntries = entryOrchestrator.GetAllUserEntries((int)Session["userId"]);
+            List<DiaryEntryDto> userEntries = entryOrchestrator.GetAllUserEntries((int)Session["userId"]);
 
             // if the list of entries is empty, redirect to page to create new entry
             if (userEntries == null)
@@ -43,8 +47,15 @@ namespace Atypical.Controllers
                 index = 0;
             }
 
+            // if the list of entries is null, redirect to the home page
+            if (userEntries == null || userEntries.Count == 0)
+            {
+                // TODO just make the page show that there are no entries yet instead of redirecting
+                return RedirectToAction("Index", "Home");
+            }
+
             // grab the item from the list based on the index passed
-            EntryDto entry = userEntries[(int)index];
+            DiaryEntryDto entry = userEntries[(int)index];
 
             // if the item is null, redirect to the home page
             if (entry == null)
@@ -115,7 +126,7 @@ namespace Atypical.Controllers
             {
 
                 // Create the entry
-                EntryDto newEntry = new EntryDto()
+                DiaryEntryDto newEntry = new DiaryEntryDto()
                 {
                     UserId = model.UserId,
                     Happy = model.Happy,
@@ -128,11 +139,31 @@ namespace Atypical.Controllers
                     Text = entryOrchestrator.ConvertBBCodeToHtml(model.Text)
                 };
 
+                bool firstEntry = false;
+                // check if it's the first entry today
+                if (!EntryHelper.HasEntryToday(newEntry.UserId))
+                {
+                    firstEntry = true;
+
+                }
+
                 // validate success
                 bool successfullyCreatedEntry = entryOrchestrator.CreateEntry(newEntry);
 
                 if (successfullyCreatedEntry == true)
                 {
+                    // generate coin if it's the first entry
+                    if (firstEntry)
+                    {
+                        // if so, generate coin for the user
+                        CoinHelper.GenerateCoin(newEntry.UserId,
+                            (int)MinCoinValues.NewDiaryEntry, (int)MaxCoinValues.NewDiaryEntry);
+
+                        // determine their bonus for entries in a row
+                        int bonus = EntryHelper.GetDaysInRow(newEntry.UserId) * (int)MaxCoinValues.DiaryEntryBonus;
+                        // generate coin with the bonus as both the min and max
+                        CoinHelper.GenerateCoin(newEntry.UserId, bonus, bonus);
+                    }
 
                     return RedirectToAction("View", "Entry");
                 }
@@ -140,8 +171,6 @@ namespace Atypical.Controllers
                 {
                     ModelState.AddModelError(string.Empty, "New entry could not be created.");
                 }
-
-
             }
 
             return View();
@@ -160,7 +189,7 @@ namespace Atypical.Controllers
             }
 
             // now grab the correct entry from the orchestrator
-            EntryDto entry = entryOrchestrator.GetEntryById((int)id);
+            DiaryEntryDto entry = entryOrchestrator.GetEntryById((int)id);
 
             // if the entry is null, redirect to home page
             if (entry == null)
@@ -198,7 +227,7 @@ namespace Atypical.Controllers
             {
 
                 // Create the entry
-                EntryDto updatedEntry = new EntryDto()
+                DiaryEntryDto updatedEntry = new DiaryEntryDto()
                 {
                     Id = model.Id,
                     Happy = model.Happy,
@@ -224,7 +253,7 @@ namespace Atypical.Controllers
                     }
 
                     // otherwise, get a list of that user's entries to identify index 
-                    List<EntryDto> userEntries = entryOrchestrator.GetAllUserEntries((int)Session["userId"]);
+                    List<DiaryEntryDto> userEntries = entryOrchestrator.GetAllUserEntries((int)Session["userId"]);
 
                     // if the list of entries is empty, redirect regular view pagw
                     if (userEntries == null)

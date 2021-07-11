@@ -8,16 +8,16 @@ namespace Atypical.Domain.Orchestrators.Diary
 {
     public class EntryOrchestrator
     {
-        private EntryRepository entryRepository;
+        private DiaryRepository DiaryRepository;
 
         public EntryOrchestrator()
         {
-            entryRepository = new EntryRepository();
+            DiaryRepository = new DiaryRepository();
         }
 
 
         // Create a new entry
-        public bool CreateEntry(EntryDto entryDto)
+        public bool CreateEntry(DiaryEntryDto entryDto)
         {
             // if the dto is null, return false
             if (entryDto == null)
@@ -26,7 +26,7 @@ namespace Atypical.Domain.Orchestrators.Diary
             }
 
             // Add the dto to the repo
-            entryRepository.AddEntry(entryDto);
+            DiaryRepository.AddEntry(entryDto);
 
 
             // return true that it was successful
@@ -35,7 +35,7 @@ namespace Atypical.Domain.Orchestrators.Diary
         }
 
         // Update a new entry
-        public bool UpdateEntry(EntryDto entryDto)
+        public bool UpdateEntry(DiaryEntryDto entryDto)
         {
             // if the dto is null, return false
             if (entryDto == null)
@@ -44,7 +44,7 @@ namespace Atypical.Domain.Orchestrators.Diary
             }
 
             // update the entry in the repo
-            entryRepository.UpdateEntry(entryDto);
+            DiaryRepository.UpdateEntry(entryDto);
 
 
             // return true that it was successful
@@ -55,9 +55,9 @@ namespace Atypical.Domain.Orchestrators.Diary
 
         // Methods to get entry or entries
 
-        public EntryDto GetEntryById(int id)
+        public DiaryEntryDto GetEntryById(int id)
         {
-            EntryDto entryDto = entryRepository.GetEntryById(id);
+            DiaryEntryDto entryDto = DiaryRepository.GetEntryById(id);
 
             if (entryDto == null)
             {
@@ -67,9 +67,9 @@ namespace Atypical.Domain.Orchestrators.Diary
             return entryDto;
         }
 
-        public List<EntryDto> GetAllUserEntries(int userId)
+        public List<DiaryEntryDto> GetAllUserEntries(int userId)
         {
-            List<EntryDto> entries = entryRepository.GetEntriesByUserId(userId);
+            List<DiaryEntryDto> entries = (List<DiaryEntryDto>)DiaryRepository.GetEntriesByUserId(userId);
 
             if (entries == null)
             {
@@ -79,9 +79,9 @@ namespace Atypical.Domain.Orchestrators.Diary
             return entries;
         }
 
-        public List<EntryDto> GetUserEntriesByDate(int userId, DateTime dateAndTime)
+        public List<DiaryEntryDto> GetUserEntriesByDate(int userId, DateTime dateAndTime)
         {
-            List<EntryDto> entries = entryRepository.GetEntriesByDate(userId, dateAndTime);
+            List<DiaryEntryDto> entries = (List<DiaryEntryDto>)DiaryRepository.GetEntriesByDate(userId, dateAndTime);
 
             if (entries == null)
             {
@@ -91,9 +91,9 @@ namespace Atypical.Domain.Orchestrators.Diary
             return entries;
         }
 
-        public List<EntryDto> GetUserEntriesByDateRange(int userId, DateTime dateAndTimeMin, DateTime dateAndTimeMax)
+        public List<DiaryEntryDto> GetUserEntriesByDateRange(int userId, DateTime dateAndTimeMin, DateTime dateAndTimeMax)
         {
-            List<EntryDto> entries = entryRepository.GetEntriesByDateRange(userId, dateAndTimeMin, dateAndTimeMax);
+            List<DiaryEntryDto> entries = (List<DiaryEntryDto>)DiaryRepository.GetEntriesByDateRange(userId, dateAndTimeMin, dateAndTimeMax);
 
             if (entries == null)
             {
@@ -149,7 +149,7 @@ namespace Atypical.Domain.Orchestrators.Diary
                 return false;
             }
 
-            List<EntryDto> entryDtos = entryRepository.GetEntriesByUserId(userId);
+            List<DiaryEntryDto> entryDtos = (List<DiaryEntryDto>)DiaryRepository.GetEntriesByUserId(userId);
 
             if (entryDtos == null)
             {
@@ -169,7 +169,7 @@ namespace Atypical.Domain.Orchestrators.Diary
                 return false;
             }
 
-            List<EntryDto> entryDtos = entryRepository.GetEntriesByDate(userId, dateAndTime);
+            List<DiaryEntryDto> entryDtos = (List<DiaryEntryDto>)DiaryRepository.GetEntriesByDate(userId, dateAndTime);
 
             if (entryDtos == null)
             {
@@ -189,7 +189,7 @@ namespace Atypical.Domain.Orchestrators.Diary
                 return false;
             }
 
-            List<EntryDto> entryDtos = entryRepository.GetEntriesByDateRange(userId, dateAndTimeMin, dateAndTimeMax);
+            List<DiaryEntryDto> entryDtos = (List<DiaryEntryDto>)DiaryRepository.GetEntriesByDateRange(userId, dateAndTimeMin, dateAndTimeMax);
 
             if (entryDtos == null)
             {
