@@ -39,8 +39,8 @@ function grabCoinInfo() {
 
         if (this.readyState == 4 && this.status == 200) {
             // response
-            bankAccount = JSON.Parse(this.response);
-            console.log(bankAcount);
+            bankAccount = JSON.parse(this.response);
+            console.log(bankAccount);
             showCoinInfo();
         }
 

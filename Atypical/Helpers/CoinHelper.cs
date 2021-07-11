@@ -2,6 +2,7 @@
 using Atypical.Crosscutting.Dtos.User;
 using Atypical.Domain.Orchestrators.Bank;
 using Atypical.Domain.Orchestrators.User;
+using Atypical.Web.Models.Bank;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,28 @@ namespace Atypical.Helpers
             bankOrchestrator.AddToChecking(amount, account);
 
         }
+
+
+        // get a bank account view model from a dto
+        public static BankAccountViewModel ConvertBankAccountDtoToModel(BankAccountDto dto)
+        {
+            if (dto == null)
+            {
+                return null;
+            }
+
+            BankAccountViewModel model = new BankAccountViewModel()
+            {
+                UserId = dto.UserId,
+                Checking = dto.Checking,
+                Savings = dto.Savings
+            };
+
+            return model;
+        }
+
+
+
 
     }
 }
