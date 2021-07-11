@@ -5,6 +5,9 @@
     ViewBag.Title = "Create User";
 }
 
+<!-- TODO set up a way to crop the user profile photo 
+    HACK For now the user uploads a photo, but eventually there will be avatar makers-->
+
 <h2>Create User</h2>
 
 @using (Html.BeginForm("Create", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))

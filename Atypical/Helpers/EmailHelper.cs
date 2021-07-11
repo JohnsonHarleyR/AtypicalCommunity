@@ -118,11 +118,10 @@ namespace Atypical.Web.Helpers
             }
 
             // create message to send
-            var location = System.Reflection.Assembly.GetEntryAssembly().Location;
-            var directory = System.IO.Path.GetDirectoryName(location);
-            var link = $@"{directory}\User\ConfirmEmail?Id={userId}";
+            var link = $@"https://localhost:44398/User/ConfirmEmail?id={userId}";
             string title = "Atypical: Confirm Your Account";
-            string message = $"<a href=\"{link}\">Click here to confirm your account.</a>";
+            string message = $"<a href=\"{link}\">Click here to confirm your account." +
+                "</a><br><i>(Be sure that you are logged in first.)</i>";
 
             // send the message, store result as a bool
             //Task<bool> successful = SendEmail(receiverEmail, title, message);

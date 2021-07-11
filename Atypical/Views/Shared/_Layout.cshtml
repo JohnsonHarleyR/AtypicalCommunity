@@ -67,13 +67,27 @@
                 </ul>
 
                 <div class="d-flex">
-                    <div id="money-partial">
-                        @{
-                            Html.RenderPartial("_Money", new BankAccountViewModel());
+                    <div id="userTypeDiv">
+                        @if (Session["username"] != null)
+                        {
+                        <span id="userType">Test</span>
                         }
                     </div>
-
                 </div>
+
+                <div class="d-flex">
+                    <div id="moneyDiv">
+                        @if (Session["username"] != null)
+                        {
+                            <text>
+
+                                <label id="moneyLabel">Coin: </label>
+                                <a href=""><span id="coinAmount"></span></a>
+                            </text>
+                        }
+                    </div>
+                </div>
+
             </div>
         </div>
     </nav>
@@ -89,6 +103,7 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/importantjs")
     @RenderSection("scripts", required: false)
 
 

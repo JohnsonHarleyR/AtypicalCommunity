@@ -50,6 +50,7 @@
     <Compile Include="Enums\CoinEnums.cs" />
     <Compile Include="Enums\DiaryEnums.cs" />
     <Compile Include="Enums\EmailEnums.cs" />
+    <Compile Include="Enums\LogEnums.cs" />
     <Compile Include="Enums\UserEnums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

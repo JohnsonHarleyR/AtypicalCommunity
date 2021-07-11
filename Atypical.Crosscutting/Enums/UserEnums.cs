@@ -14,4 +14,12 @@ namespace Atypical.Crosscutting.Enums
         NPC
     }
 
+    // What is the state of their account?
+    public enum AccountStatus
+    {
+        Active,
+        Suspended,
+        Frozen
+    }
+
 }

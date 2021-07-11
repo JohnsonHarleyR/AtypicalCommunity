@@ -1,7 +1,7 @@
-﻿USE [Atypical]
+USE [Atypical]
 GO
 
-/****** Object:  Table [db_owner].[Bank]    Script Date: 7/8/2021 3:55:23 PM ******/
+/****** Object:  Table [db_owner].[Bank]    Script Date: 7/11/2021 3:04:42 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -24,4 +24,5 @@ GO
 
 ALTER TABLE [db_owner].[Bank] ADD  DEFAULT ((100)) FOR [Savings]
 GO
+
 

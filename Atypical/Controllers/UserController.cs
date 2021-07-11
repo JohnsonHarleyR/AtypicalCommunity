@@ -1,4 +1,5 @@
 ﻿using Atypical.Crosscutting.Dtos.User;
+using Atypical.Crosscutting.Enums;
 using Atypical.Domain.Orchestrators.User;
 using Atypical.Web.Helpers;
 using Atypical.Web.Models.User;
@@ -15,8 +16,10 @@ using System.Web.Mvc;
 namespace Atypical.Controllers
 {
     // TODO Allow user to edit their details
-    // TODO Allow user to confirm their account (there's a link about doing this in bookmarks?)
-    // TODO Allow user to reset their password (there's a link about doing this in bookmarks?)
+    // TODO Add admin privledges for admins
+    // TODO Allow account suspensions and freezes
+    // TODO Add user activity logs
+    // TODO Add admin activity logs
 
     public class UserController : Controller
     {
@@ -126,6 +129,8 @@ namespace Atypical.Controllers
 
                     // Use hash to add security to the password
                     string hashPassword = userOrchestrator.SecurePassword(model.Password);
+                    // set the model password to this hashpassword
+                    model.Password = hashPassword;
 
                     // try to upload the filepath
                     bool successful = UserHelper.SaveImage(ProfileImageFile);
@@ -140,16 +145,7 @@ namespace Atypical.Controllers
                         model.ProfileImageUrl = "/Images/" + ProfileImageFile.FileName;
                     }
 
-                    UserDto newUser = new UserDto()
-                    {
-                        Username = model.Username,
-                        FirstName = model.FirstName,
-                        ProfileImageUrl = model.ProfileImageUrl,
-                        DateOfBirth = model.DateOfBirth,
-                        Email = model.Email,
-                        Password = hashPassword, // add secure password to database
-                        IsEmailConfirmed = model.IsEmailConfirmed
-                    };
+                    UserDto newUser = UserHelper.ConvertUserModelToDto(model);
 
                     // HACK for now, just make email confirmed until we can get email sending working
                     //newUser.IsEmailConfirmed = true;
@@ -181,6 +177,25 @@ namespace Atypical.Controllers
 
             // If the model view wasn't valid, return them to the create page
             return View(model);
+        }
+
+        public ActionResult SendConfirmation(int? id)
+        {
+            if (id != null)
+            {
+                // try to grab user
+                UserDto user = userOrchestrator.GetUserById((int)id);
+
+                if (user != null)
+                {
+                    // send email confirmation
+                    EmailHelper.SendConfirmationEmail(user.Email, (int)Session["userId"]);
+                }
+            }
+
+            // now redirect back
+            return RedirectToAction("ConfirmEmail", "Error");
+
         }
 
 
@@ -222,6 +237,30 @@ namespace Atypical.Controllers
 
             
             return View(model);
+        }
+
+        public ActionResult ConfirmEmail(int? id)
+        {
+            // try to grab the user
+            UserDto user = userOrchestrator.GetUserById((int)id);
+
+            // if it's null or user isn't logged in, redirect to home page
+            // if the id doesn't match the session, redirect, too
+            if (id == null || user == null || Session["username"] == null
+                || Session["userId"] == null ||
+                (int)Session["userId"] != id || user.IsEmailConfirmed == true)
+            {
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            // otherwise, confirm their email and update the user
+            user.IsEmailConfirmed = true;
+            userOrchestrator.UpdateUser(user);
+
+            // direct them to a page saying their email was confirmed
+            return View();
+
         }
 
 

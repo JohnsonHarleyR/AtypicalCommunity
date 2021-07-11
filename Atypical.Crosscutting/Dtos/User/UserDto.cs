@@ -19,5 +19,6 @@ namespace Atypical.Crosscutting.Dtos.User
 
         public bool IsEmailConfirmed { get; set; }
         public UserType UserType { get; set; }
+        public AccountStatus AccountStatus { get; set; }
     }
 }

@@ -77,6 +77,7 @@ namespace Atypical.Data.Repositories.User
                 connection.Execute(sql,
                     new
                     {
+                        Username = userDto.Username,
                         FirstName = userDto.FirstName,
                         ProfileImageUrl = userDto.ProfileImageUrl,
                         DateOfBirth = userDto.DateOfBirth,
@@ -109,6 +110,7 @@ namespace Atypical.Data.Repositories.User
                     new
                     {
                         Id = userDto.Id,
+                        Username = userDto.Username,
                         FirstName = userDto.FirstName,
                         ProfileImageUrl = userDto.ProfileImageUrl,
                         DateOfBirth = userDto.DateOfBirth,

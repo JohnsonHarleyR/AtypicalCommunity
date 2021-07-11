@@ -3,10 +3,17 @@
     ViewBag.Title = "Please Confirm";
 }
 
+<script>
+    function confirmationAlert() {
+        alert("Confirmation email sent.");
+    }
+</script>
+
 <h2>Oops! Your account still needs to be confirmed!</h2>
 
 Please check your email. There should be message with a link to confirm your account.
 <br />
 <!--TODO make this link work-->
-<a href="">Resend confirmation email</a>
+<a href="/User/SendConfirmation?id=@((int?)Session["userId"])" 
+   onclick="confirmationAlert()">Resend confirmation email</a>
 

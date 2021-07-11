@@ -9,6 +9,7 @@ namespace Atypical.Web.Models.User
 {
     public class UserViewModel
     {
+        public int Id { get; set; }
         [Required]
         [Remote("UsernameExists", "User", HttpMethod = "POST", ErrorMessage = "Username already exists.")]
         public string Username { get; set; }
@@ -31,7 +32,8 @@ namespace Atypical.Web.Models.User
         public string ConfirmPassword { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
-        public UserType UserType { get; set; }
+        public string UserType { get; set; }
+        public string AccountStatus { get; set; }
 
 
         public UserViewModel() { }
@@ -45,8 +47,8 @@ namespace Atypical.Web.Models.User
             Email = userDto.Email;
             Password = userDto.Password;
             IsEmailConfirmed = userDto.IsEmailConfirmed;
-            UserType = (UserType)userDto.UserType;
-
+            UserType = userDto.UserType.ToString();
+            AccountStatus = userDto.AccountStatus.ToString();
         }
     }
 }

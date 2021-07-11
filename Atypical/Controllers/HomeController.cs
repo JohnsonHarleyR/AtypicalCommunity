@@ -15,8 +15,6 @@ namespace Atypical.Web.Controllers
 
         public ActionResult Index()
         {
-            // do native library hack to fix sqlite bug
-            userOrchestrator.SqliteHack();
 
             if (Session["username"] != null)
             {

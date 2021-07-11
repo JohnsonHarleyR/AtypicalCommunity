@@ -1,7 +1,7 @@
-﻿USE [Atypical]
+USE [Atypical]
 GO
 
-/****** Object:  Table [db_owner].[User]    Script Date: 7/8/2021 3:58:26 PM ******/
+/****** Object:  Table [db_owner].[User]    Script Date: 7/11/2021 3:24:31 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -18,6 +18,7 @@ CREATE TABLE [db_owner].[User](
 	[Password] [varchar](100) NOT NULL,
 	[IsEmailConfirmed] [bit] NOT NULL,
 	[UserType] [int] NOT NULL,
+	[AccountStatus] [int] NOT NULL,
  CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -29,6 +30,9 @@ ALTER TABLE [db_owner].[User] ADD  CONSTRAINT [DF_User_IsEmailConfirmed]  DEFAUL
 GO
 
 ALTER TABLE [db_owner].[User] ADD  CONSTRAINT [DF_User_UserType]  DEFAULT ((0)) FOR [UserType]
+GO
+
+ALTER TABLE [db_owner].[User] ADD  CONSTRAINT [DF_User_AccountStatus]  DEFAULT ((0)) FOR [AccountStatus]
 GO
 
 
