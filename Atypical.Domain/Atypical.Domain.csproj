@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Orchestrators\Avatar\AvatarOrchestrator.cs" />
     <Compile Include="Orchestrators\Bank\BankOrchestrator.cs" />
     <Compile Include="Orchestrators\Diary\ChartOrchestrator.cs" />
     <Compile Include="Orchestrators\Diary\EntryOrchestrator.cs" />

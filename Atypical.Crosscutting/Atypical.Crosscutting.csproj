@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -42,16 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dtos\Avatar\AvatarDto.cs" />
+    <Compile Include="Dtos\Avatar\AvatarItemDto.cs" />
     <Compile Include="Dtos\Bank\BankAccountDto.cs" />
     <Compile Include="Dtos\Diary\ChartNodeDto.cs" />
     <Compile Include="Dtos\Diary\DiaryEntryDto.cs" />
     <Compile Include="Dtos\Diary\FullChartDto.cs" />
+    <Compile Include="Dtos\Inventory\InventoryDto.cs" />
     <Compile Include="Dtos\User\UserDto.cs" />
     <Compile Include="Enums\CoinEnums.cs" />
     <Compile Include="Enums\DiaryEnums.cs" />
     <Compile Include="Enums\EmailEnums.cs" />
+    <Compile Include="Enums\ItemEnums.cs" />
     <Compile Include="Enums\LogEnums.cs" />
     <Compile Include="Enums\UserEnums.cs" />
+    <Compile Include="Interfaces\IItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

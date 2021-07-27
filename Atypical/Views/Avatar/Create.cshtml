@@ -1,0 +1,119 @@
+﻿@using Atypical.Models.Avatar
+@using Atypical.Helpers
+@using Atypical.Crosscutting.Enums
+@model AvatarMakerViewModel
+
+@{
+    ViewBag.Title = "Create Avatar";
+}
+
+<link rel="stylesheet" href="~/Content/avatar-maker.css">
+
+<script>
+
+    var avatar = @Html.Raw(Json.Encode(Model.Avatar));
+    var avatarItems = @Html.Raw(Json.Encode(Model.AvatarItems));
+    console.log(avatar);
+    console.log(avatarItems);
+
+</script>
+
+
+
+<div id="app"></div>
+
+
+
+<div id="avatarMakerDiv">
+
+    <table id="avatarMakerTable">
+        <tr>
+
+            <td>
+                <div class="tab">
+
+                    @foreach (AvatarItemCategory category in (AvatarItemCategory[])Enum.GetValues(typeof(AvatarItemCategory)))
+                    {
+                        <button class="tablinks" onclick="openCategory(event, '@category')">@category</button>
+                    }
+                </div>
+
+                @foreach (AvatarItemCategory category in (AvatarItemCategory[])Enum.GetValues(typeof(AvatarItemCategory)))
+                {
+
+                    <div id="@category" class="tabcontent">
+
+                        @{
+                            List<AvatarItemSubCategory> subCategories = AvatarHelper.GetSubCategories(category);
+                            if (subCategories != null)
+                            {
+
+                                <div class="tab">
+
+                                    @foreach (AvatarItemSubCategory subCategory in subCategories)
+                                    {
+                                        <button class="tablinks1" onclick="openSubCategory(event, '@subCategory')">@subCategory</button>
+                                    }
+
+                                </div>
+
+                                foreach (AvatarItemSubCategory subCategory in subCategories)
+                                {
+
+                                    <div id="@subCategory" class="tabcontent1">
+                                    </div>
+                                }
+
+                            }
+                        }
+
+
+                    </div>
+
+                }
+            </td>
+
+            <td id="avatarDisplay">
+
+
+                <div class="avatar-img-div" id="backgroundLayer"></div>
+                <div class="avatar-img-div" id="secondaryBackgroundLayer"></div>
+                <div class="avatar-img-div" id="baseLayer"></div>
+                <div class="avatar-img-div" id="tattoosLayer"></div>
+                <div class="avatar-img-div" id="marksLayer"></div>
+                <div class="avatar-img-div" id="eyesLayer"></div>
+                <div class="avatar-img-div" id="noseLayer"></div>
+                <div class="avatar-img-div" id="mouthLayer"></div>
+                <div class="avatar-img-div" id="makeupLayer"></div>
+                <div class="avatar-img-div" id="facialHairLayer"></div>
+                <div class="avatar-img-div" id="earRingsLayer"></div>
+                <div class="avatar-img-div" id="facePiercingsLayer"></div>
+                <div class="avatar-img-div" id="necklaceLayer"></div>
+                <div class="avatar-img-div" id="leftArmLayer"></div>
+                <div class="avatar-img-div" id="rightArmLayer"></div>
+                <div class="avatar-img-div" id="hairLayer"></div>
+                <div class="avatar-img-div" id="hairAccessoryLayer"></div>
+                <div class="avatar-img-div" id="hatLayer"></div>
+                <div class="avatar-img-div" id="shoesLayer"></div>
+                <div class="avatar-img-div" id="bottomLayer"></div>
+                <div class="avatar-img-div" id="topLayer"></div>
+                <div class="avatar-img-div" id="fullBodyLayer"></div>
+                <div class="avatar-img-div" id="neckLayer"></div>
+                <div class="avatar-img-div" id="leftAccessoryLayer"></div>
+                <div class="avatar-img-div" id="rightAccessoryLayer"></div>
+                <div class="avatar-img-div" id="leftHandLayer"></div>
+                <div class="avatar-img-div" id="rightHandLayer"></div>
+                <div class="avatar-img-div" id="foregroundLayer"></div>
+
+            </td>
+
+
+        </tr>
+    </table>
+
+
+
+</div>
+
+<script src="~/Scripts/avatar-maker.js"></script>
+

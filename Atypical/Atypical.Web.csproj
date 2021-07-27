@@ -137,6 +137,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AjaxController.cs" />
+    <Compile Include="Controllers\AvatarController.cs" />
     <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\ChartController.cs" />
     <Compile Include="Controllers\EntryController.cs" />
@@ -146,11 +147,15 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\AvatarHelper.cs" />
     <Compile Include="Helpers\ChartHelper.cs" />
     <Compile Include="Helpers\CoinHelper.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\EntryHelper.cs" />
     <Compile Include="Helpers\UserHelper.cs" />
+    <Compile Include="Models\Avatar\AvatarItemViewModel.cs" />
+    <Compile Include="Models\Avatar\AvatarMakerViewModel.cs" />
+    <Compile Include="Models\Avatar\AvatarViewModel.cs" />
     <Compile Include="Models\Bank\BankAccountViewModel.cs" />
     <Compile Include="Models\Diary\ChartNodeViewModel.cs" />
     <Compile Include="Models\Diary\ChartViewModel.cs" />
@@ -164,6 +169,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\avatar-maker.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -174,6 +180,41 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\Avatar\empty-avatar.png" />
+    <Content Include="Images\Avatar\Items\Backdrop\Background\background_test1.png" />
+    <Content Include="Images\Avatar\Items\Backdrop\Background\background_test2.png" />
+    <Content Include="Images\Avatar\Items\Backdrop\Background\background_test3.png" />
+    <Content Include="Images\Avatar\Items\Backdrop\Background\Icons\icon_background_test1.png" />
+    <Content Include="Images\Avatar\Items\Backdrop\Background\Icons\icon_background_test2.png" />
+    <Content Include="Images\Avatar\Items\Backdrop\Background\Icons\icon_background_test3.png" />
+    <Content Include="Images\Avatar\Items\Backdrop\SecondaryBackground\Icons\icon_secondarybackground_test1.png" />
+    <Content Include="Images\Avatar\Items\Backdrop\SecondaryBackground\Icons\icon_secondarybackground_test2.png" />
+    <Content Include="Images\Avatar\Items\Backdrop\SecondaryBackground\secondarybackground_test1.png" />
+    <Content Include="Images\Avatar\Items\Backdrop\SecondaryBackground\secondarybackground_test2.png" />
+    <Content Include="Images\Avatar\Items\Empty\empty-icon.png" />
+    <Content Include="Images\Avatar\Items\Face\Eyes\eyes_test1.png" />
+    <Content Include="Images\Avatar\Items\Face\Eyes\eyes_test2.png" />
+    <Content Include="Images\Avatar\Items\Face\Eyes\Icons\icon_eyes_test1.png" />
+    <Content Include="Images\Avatar\Items\Face\Eyes\Icons\icon_eyes_test2.png" />
+    <Content Include="Images\Avatar\Items\Face\Mouth\Icons\icon_mouth_test1.png" />
+    <Content Include="Images\Avatar\Items\Face\Mouth\Icons\icon_mouth_test2.png" />
+    <Content Include="Images\Avatar\Items\Face\Mouth\Icons\icon_mouth_test3.png" />
+    <Content Include="Images\Avatar\Items\Face\Mouth\mouth_test1.png" />
+    <Content Include="Images\Avatar\Items\Face\Mouth\mouth_test2.png" />
+    <Content Include="Images\Avatar\Items\Face\Mouth\mouth_test3.png" />
+    <Content Include="Images\Avatar\Items\Face\Nose\Icons\icon_nose_test1.png" />
+    <Content Include="Images\Avatar\Items\Face\Nose\Icons\icon_nose_test2.png" />
+    <Content Include="Images\Avatar\Items\Face\Nose\Icons\icon_nose_test3.png" />
+    <Content Include="Images\Avatar\Items\Face\Nose\nose_test1.png" />
+    <Content Include="Images\Avatar\Items\Face\Nose\nose_test2.png" />
+    <Content Include="Images\Avatar\Items\Face\Nose\nose_test3.png" />
+    <Content Include="Images\Avatar\Items\Skin\Base\base_test1.png" />
+    <Content Include="Images\Avatar\Items\Skin\Base\base_test2.png" />
+    <Content Include="Images\Avatar\Items\Skin\Base\base_test3.png" />
+    <Content Include="Images\Avatar\Items\Skin\Base\Icons\icon_base_test1.png" />
+    <Content Include="Images\Avatar\Items\Skin\Base\Icons\icon_base_test2.png" />
+    <Content Include="Images\Avatar\Items\Skin\Base\Icons\icon_base_test3.png" />
+    <Content Include="Scripts\avatar-maker.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
@@ -214,10 +255,32 @@
     <Content Include="Views\User\NewPassword.cshtml" />
     <Content Include="Views\User\CheckCode.cshtml" />
     <Content Include="Views\Shared\_Money.cshtml" />
+    <Content Include="Views\Avatar\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Images\" />
+    <Folder Include="Images\Avatar\Items\Accessories\LeftAccessory\Icons\" />
+    <Folder Include="Images\Avatar\Items\Accessories\RightAccessory\Icons\" />
+    <Folder Include="Images\Avatar\Items\Backdrop\Foreground\Icons\" />
+    <Folder Include="Images\Avatar\Items\Face\Makeup\Icons\" />
+    <Folder Include="Images\Avatar\Items\Hands\LeftHand\Icons\" />
+    <Folder Include="Images\Avatar\Items\Hands\RightHand\Icons\" />
+    <Folder Include="Images\Avatar\Items\Head\HairAccessory\Icons\" />
+    <Folder Include="Images\Avatar\Items\Head\Hair\Icons\" />
+    <Folder Include="Images\Avatar\Items\Head\Hat\Icons\" />
+    <Folder Include="Images\Avatar\Items\Jewelry\EarRings\Icons\" />
+    <Folder Include="Images\Avatar\Items\Jewelry\FacePiercings\Icons\" />
+    <Folder Include="Images\Avatar\Items\Jewelry\LeftArm\Icons\" />
+    <Folder Include="Images\Avatar\Items\Jewelry\Necklace\Icons\" />
+    <Folder Include="Images\Avatar\Items\Jewelry\RightArm\Icons\" />
+    <Folder Include="Images\Avatar\Items\Lower\Bottom\Icons\" />
+    <Folder Include="Images\Avatar\Items\Lower\Shoes\Icons\" />
+    <Folder Include="Images\Avatar\Items\Skin\Marks\Icons\" />
+    <Folder Include="Images\Avatar\Items\Skin\Tattoos\Icons\" />
+    <Folder Include="Images\Avatar\Items\Torso\FullBody\Icons\" />
+    <Folder Include="Images\Avatar\Items\Torso\Neck\Icons\" />
+    <Folder Include="Images\Avatar\Items\Torso\Top\Icons\" />
+    <Folder Include="Images\Avatar\User\" />
     <Folder Include="MailDrop\" />
     <Folder Include="Views\Ajax\" />
     <Folder Include="Views\Bank\" />

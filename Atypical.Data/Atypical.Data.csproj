@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Avatar\AvatarRepository.cs" />
     <Compile Include="Repositories\Bank\BankRepository.cs" />
     <Compile Include="Repositories\Diary\DiaryRepository.cs" />
     <Compile Include="Repositories\User\UserRepository.cs" />
@@ -96,11 +97,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="StoredProcedures\Avatar\Avatar Items\AddAvatarItem.sql" />
+    <Content Include="StoredProcedures\Avatar\Avatar Items\GetAllAvatarItems.sql" />
+    <Content Include="StoredProcedures\Avatar\Avatar Items\GetAvatarItemById.sql" />
+    <Content Include="TableCreation\AvatarItemTable_SQL.sql" />
     <Content Include="TableCreation\DiaryTable_SQL.txt" />
     <Content Include="TableCreation\BankTable_SQL.txt" />
+    <Content Include="TableCreation\UserAvatarTable_SQL.sql" />
     <Content Include="TableCreation\UserTable_SQL.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="StoredProcedures\Avatar\User Avatars\" />
     <Folder Include="StoredProcedures\Bank\" />
     <Folder Include="StoredProcedures\Diary\" />
     <Folder Include="StoredProcedures\User\" />
