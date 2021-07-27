@@ -243,6 +243,46 @@ namespace Atypical.Helpers
             return avatarModel;
         }
 
+        public static AvatarDto GetAvatarDto(AvatarViewModel avatarModel)
+        {
+
+            AvatarDto avatarDto = new AvatarDto()
+            {
+                UserId = avatarModel.UserId,
+                IsCreated = avatarModel.IsCreated,
+                Background = avatarModel.Background.Id,
+                SecondaryBackground = avatarModel.SecondaryBackground.Id,
+                Foreground = avatarModel.Foreground.Id,
+                Base = avatarModel.Base.Id,
+                Tattoos = avatarModel.Tattoos.Id,
+                Marks = avatarModel.Marks.Id,
+                Eyes = avatarModel.Eyes.Id,
+                Nose = avatarModel.Nose.Id,
+                Mouth = avatarModel.Mouth.Id,
+                Makeup = avatarModel.Makeup.Id,
+                FacialHair = avatarModel.FacialHair.Id,
+                EarRings = avatarModel.EarRings.Id,
+                FacePiercings = avatarModel.FacePiercings.Id,
+                Necklace = avatarModel.Necklace.Id,
+                LeftArm = avatarModel.LeftArm.Id,
+                RightArm = avatarModel.RightArm.Id,
+                Hair = avatarModel.Hair.Id,
+                HairAccessory = avatarModel.HairAccessory.Id,
+                Hat = avatarModel.Hat.Id,
+                Top = avatarModel.Top.Id,
+                FullBody = avatarModel.FullBody.Id,
+                Neck = avatarModel.Neck.Id,
+                Bottom = avatarModel.Bottom.Id,
+                Shoes = avatarModel.Shoes.Id,
+                LeftAccessory = avatarModel.LeftAccessory.Id,
+                RightAccessory = avatarModel.RightAccessory.Id,
+                LeftHand = avatarModel.LeftHand.Id,
+                RightHand = avatarModel.RightHand.Id
+            };
+
+            return avatarDto;
+        }
+
 
     }
 }

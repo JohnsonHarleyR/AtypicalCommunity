@@ -1,7 +1,10 @@
 ﻿using Atypical.Crosscutting.Dtos.Avatar;
+using Atypical.Crosscutting.Dtos.Inventory;
 using Atypical.Crosscutting.Dtos.User;
 using Atypical.Crosscutting.Enums;
+using Atypical.Crosscutting.Interfaces;
 using Atypical.Domain.Orchestrators.Avatar;
+using Atypical.Domain.Orchestrators.Inventory;
 using Atypical.Domain.Orchestrators.User;
 using Atypical.Helpers;
 using Atypical.Models.Avatar;
@@ -18,6 +21,7 @@ namespace Atypical.Controllers
         // GET: Avatar
         private AvatarOrchestrator avatarOrchestrator = new AvatarOrchestrator();
         private UserOrchestrator userOrchestrator = new UserOrchestrator();
+        private InventoryOrchestrator inventoryOrchestrator = new InventoryOrchestrator();
 
         // Give the user all the default items, then redirect to the Create Page
         public ActionResult CreateFirstAvatar()
@@ -148,7 +152,10 @@ namespace Atypical.Controllers
             }
             else // otherwise grab the user's avatars
             { // TODO add inventory ability
-                items = AvatarHelper.GetAvatarItemModelList(avatarOrchestrator.GetAllAvatarItems().ToList());
+                List<InventoryItemDto> inventoryItems =
+                    inventoryOrchestrator.GetInventoryItemsByType(user.Id, ItemType.Avatar).ToList();
+                items = AvatarHelper
+                    .GetAvatarItemModelList(AvatarHelper.GetAvatarItemsFromInventoryList(inventoryItems));
             }
 
             //// TEST - add item to avatar - TODO change avatar items to models instead of dtos?
@@ -162,6 +169,65 @@ namespace Atypical.Controllers
             };
 
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Create(AvatarMakerViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // turn the avatar model into a dto
+                AvatarDto avatar = AvatarHelper.GetAvatarDto(model.Avatar);
+
+                // if this is the first time creating, add the avatar items to the user inventory
+                if (avatar.IsCreated == false)
+                {
+                    // set it to true
+                    avatar.IsCreated = true;
+
+                    // add items to inventory
+                    List<IItem> parts = new List<IItem>();
+                    parts.Add(model.Avatar.Background);
+                    parts.Add(model.Avatar.SecondaryBackground);
+                    parts.Add(model.Avatar.Foreground);
+                    parts.Add(model.Avatar.Base);
+                    parts.Add(model.Avatar.Tattoos);
+                    parts.Add(model.Avatar.Marks);
+                    parts.Add(model.Avatar.Eyes);
+                    parts.Add(model.Avatar.Nose);
+                    parts.Add(model.Avatar.Mouth);
+                    parts.Add(model.Avatar.Makeup);
+                    parts.Add(model.Avatar.FacialHair);
+                    parts.Add(model.Avatar.EarRings);
+                    parts.Add(model.Avatar.FacePiercings);
+                    parts.Add(model.Avatar.Necklace);
+                    parts.Add(model.Avatar.LeftArm);
+                    parts.Add(model.Avatar.RightArm);
+                    parts.Add(model.Avatar.Hair);
+                    parts.Add(model.Avatar.HairAccessory);
+                    parts.Add(model.Avatar.Hat);
+                    parts.Add(model.Avatar.Top);
+                    parts.Add(model.Avatar.FullBody);
+                    parts.Add(model.Avatar.Neck);
+                    parts.Add(model.Avatar.Bottom);
+                    parts.Add(model.Avatar.Shoes);
+                    parts.Add(model.Avatar.LeftAccessory);
+                    parts.Add(model.Avatar.RightAccessory);
+                    parts.Add(model.Avatar.LeftHand);
+                    parts.Add(model.Avatar.RightHand);
+
+                    InventoryHelper.AddItemsToInventory(parts, avatar.UserId);
+
+                }
+
+                // update the avatar
+                avatarOrchestrator.UpdateAvatar(avatar);
+
+                // TODO update the user profile pic
+
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         public ActionResult AddDefaults()

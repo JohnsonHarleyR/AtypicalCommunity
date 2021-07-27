@@ -81,6 +81,23 @@ namespace Atypical.Domain.Orchestrators.Avatar
             return true;
         }
 
+        public bool UpdateAvatar(AvatarDto avatarDto)
+        {
+            // if the dto is null, return false
+            if (avatarDto == null)
+            {
+                return false;
+            }
+
+            // update the entry in the repo
+           avatarRepository.UpdateAvatar(avatarDto);
+
+
+            // return true that it was successful
+            return true;
+
+        }
+
 
     }
 }

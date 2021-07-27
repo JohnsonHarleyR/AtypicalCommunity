@@ -152,6 +152,7 @@
     <Compile Include="Helpers\CoinHelper.cs" />
     <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\EntryHelper.cs" />
+    <Compile Include="Helpers\InventoryHelper.cs" />
     <Compile Include="Helpers\UserHelper.cs" />
     <Compile Include="Models\Avatar\AvatarItemViewModel.cs" />
     <Compile Include="Models\Avatar\AvatarMakerViewModel.cs" />

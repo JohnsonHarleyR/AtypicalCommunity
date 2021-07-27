@@ -143,7 +143,50 @@ namespace Atypical.Data.Repositories.Avatar
             }
         }
 
+        public void UpdateAvatar(AvatarDto avatarDto)
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                string sql = $"{Schema}.UpdateUserAvatar";
 
+                connection.Execute(sql,
+                                    new
+                                    {
+                                        UserId = avatarDto.UserId,
+                                        IsCreated = avatarDto.IsCreated,
+                                        Background = avatarDto.Background,
+                                        SecondaryBackground = avatarDto.SecondaryBackground,
+                                        Foreground = avatarDto.Foreground,
+                                        Base = avatarDto.Base,
+                                        Tattoos = avatarDto.Tattoos,
+                                        Marks = avatarDto.Marks,
+                                        Eyes = avatarDto.Eyes,
+                                        Nose = avatarDto.Nose,
+                                        Mouth = avatarDto.Mouth,
+                                        Makeup = avatarDto.Makeup,
+                                        FacialHair = avatarDto.FacialHair,
+                                        EarRings = avatarDto.EarRings,
+                                        FacePiercings = avatarDto.FacePiercings,
+                                        Necklace = avatarDto.Necklace,
+                                        LeftArm = avatarDto.LeftArm,
+                                        RightArm = avatarDto.RightArm,
+                                        Hair = avatarDto.Hair,
+                                        HairAccessory = avatarDto.HairAccessory,
+                                        Hat = avatarDto.Hat,
+                                        Top = avatarDto.Top,
+                                        FullBody = avatarDto.FullBody,
+                                        Neck = avatarDto.Neck,
+                                        Bottom = avatarDto.Bottom,
+                                        Shoes = avatarDto.Shoes,
+                                        LeftAccessory = avatarDto.LeftAccessory,
+                                        RightAccessory = avatarDto.RightAccessory,
+                                        LeftHand = avatarDto.LeftHand,
+                                        RightHand = avatarDto.RightHand
+                                    },
+                                    commandType: System.Data.CommandType.StoredProcedure);
+
+            }
+        }
 
 
     }
