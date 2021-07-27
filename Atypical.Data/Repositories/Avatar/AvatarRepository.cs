@@ -108,6 +108,7 @@ namespace Atypical.Data.Repositories.Avatar
                                     new
                                     {
                                         UserId = avatarDto.UserId,
+                                        IsCreated = avatarDto.IsCreated,
                                         Background = avatarDto.Background,
                                         SecondaryBackground = avatarDto.SecondaryBackground,
                                         Foreground = avatarDto.Foreground,

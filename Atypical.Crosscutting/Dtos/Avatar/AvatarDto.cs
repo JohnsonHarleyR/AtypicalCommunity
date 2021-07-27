@@ -13,6 +13,9 @@ namespace Atypical.Crosscutting.Dtos.Avatar
 
         public int UserId { get; set; } = 1; // HACK change once connected to users - make foreign key
 
+        // Is default avatar created?
+        public bool IsCreated { get; set; }
+
         // Backdrop
         public int? Background { get; set; } // 0
         public int? SecondaryBackground { get; set; }

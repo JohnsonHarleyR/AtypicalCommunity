@@ -186,6 +186,7 @@ namespace Atypical.Helpers
             AvatarViewModel avatarModel = new AvatarViewModel()
             {
                 UserId = avatarDto.UserId,
+                IsCreated = avatarDto.IsCreated,
                 Background = avatarOrchestrator.GetAvatarItemById(avatarDto.Background),
                 SecondaryBackground = avatarOrchestrator.GetAvatarItemById(avatarDto.SecondaryBackground),
                 Foreground = avatarOrchestrator.GetAvatarItemById(avatarDto.Foreground),

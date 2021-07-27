@@ -28,6 +28,12 @@ namespace Atypical.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            // Get all avatar items that have the word default (or test - for now)
+            List<AvatarItemDto> itemDtos =
+                avatarOrchestrator.GetAllAvatarItems()
+                .Where(a => a.Tags.ToLower().Contains("test") ||
+                a.Tags.ToLower().Contains("default")).ToList();
+
             // Grab the user
             UserDto user = userOrchestrator
                 .GetUserById(Int32.Parse(Session["userId"].ToString()));
@@ -35,29 +41,74 @@ namespace Atypical.Controllers
             // try to grab the avatar - if there's no avatar, create one
             AvatarDto avatar = avatarOrchestrator.GetAvatarById(user.Id);
 
-            if (avatar != null)
+            if (avatar != null && avatar.IsCreated == true)
             {
                 return RedirectToAction("Create", "Avatar");
-            }
-
-            // create an empty avatar for the user
-            avatar = new AvatarDto()
+            } else if (avatar == null) // if it's not null but attributes have not been filled
             {
-                UserId = user.Id
-            };
+                // create an empty avatar for the user
+                avatar = new AvatarDto()
+                {
+                    UserId = user.Id,
+                    IsCreated = false
+                };
 
-            // add avatar to the repo
-            avatarOrchestrator.AddAvatar(avatar);
+                // Give the avatar base, eyes, nose, and mouth default values if they are null
+                if (avatar.Base == null)
+                {
+                    var tempBase = itemDtos.Where(i => i.SubCategory.Equals(AvatarItemSubCategory.Base))
+                        .ToList().FirstOrDefault();
+                    if (tempBase != null)
+                    {
+                        avatar.Base = tempBase.Id;
+                    } 
+                }
+                if (avatar.Eyes == null)
+                {
+                    var tempEyes = itemDtos.Where(i => i.SubCategory.Equals(AvatarItemSubCategory.Eyes))
+                        .ToList().FirstOrDefault();
+                    if (tempEyes != null)
+                    {
+                        avatar.Eyes = tempEyes.Id;
+                    }
+                    
+                }
+                if (avatar.Nose == null)
+                {
+                    var tempNose = itemDtos.Where(i => i.SubCategory.Equals(AvatarItemSubCategory.Nose))
+                        .ToList().FirstOrDefault();
+                    if (tempNose != null)
+                    {
+                        avatar.Nose = tempNose.Id;
+                    }
+                    
+                }
+                if (avatar.Mouth == null)
+                {
+                    var tempMouth = itemDtos.Where(i => i.SubCategory.Equals(AvatarItemSubCategory.Mouth))
+                        .ToList().FirstOrDefault();
+                    if (tempMouth != null)
+                    {
+                        avatar.Mouth = tempMouth.Id;
+                    }
+                    
+                }
+                if (avatar.Hair == null)
+                {
+                    var tempHair = itemDtos.Where(i => i.SubCategory.Equals(AvatarItemSubCategory.Hair))
+                        .ToList().FirstOrDefault();
+                    if (tempHair != null)
+                    {
+                        avatar.Hair = tempHair.Id;
+                    }
+                }
 
-            // Get all avatar items that have the word default (or test - for now)
-            List<AvatarItemDto> itemDtos = 
-                avatarOrchestrator.GetAllAvatarItems()
-                .Where(a => a.Tags.ToLower().Contains("test") ||
-                a.Tags.ToLower().Contains("default")).ToList();
+                // add avatar to the repo
+                avatarOrchestrator.AddAvatar(avatar);
+            }
 
             // Go to Create and add the itemDtos
             return RedirectToAction("Create", "Avatar", itemDtos);
-
 
         }
 

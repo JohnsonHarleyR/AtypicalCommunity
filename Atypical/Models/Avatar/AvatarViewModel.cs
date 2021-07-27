@@ -6,6 +6,7 @@ namespace Atypical.Models.Avatar
     {
 
         public int UserId { get; set; }
+        public bool IsCreated { get; set; }
 
         // Backdrop
         public AvatarItemDto Background { get; set; } // 0

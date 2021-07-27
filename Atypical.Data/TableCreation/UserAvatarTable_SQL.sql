@@ -10,6 +10,7 @@ GO
 
 CREATE TABLE [db_owner].[UserAvatar](
 	[UserId] [int] NOT NULL,
+	[IsCreated] [bit] NOT NULL,
 	[Background] [int] NULL,
 	[SecondaryBackground] [int] NULL,
 	[Foreground] [int] NULL,
