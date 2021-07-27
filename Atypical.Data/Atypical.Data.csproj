@@ -84,6 +84,7 @@
     <Compile Include="Repositories\Avatar\AvatarRepository.cs" />
     <Compile Include="Repositories\Bank\BankRepository.cs" />
     <Compile Include="Repositories\Diary\DiaryRepository.cs" />
+    <Compile Include="Repositories\Inventory\InventoryRepository.cs" />
     <Compile Include="Repositories\User\UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>

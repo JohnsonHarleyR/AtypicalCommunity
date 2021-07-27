@@ -47,6 +47,7 @@
     <Compile Include="Orchestrators\Bank\BankOrchestrator.cs" />
     <Compile Include="Orchestrators\Diary\ChartOrchestrator.cs" />
     <Compile Include="Orchestrators\Diary\EntryOrchestrator.cs" />
+    <Compile Include="Orchestrators\Inventory\InventoryOrchestrator.cs" />
     <Compile Include="Orchestrators\User\UserOrchestrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

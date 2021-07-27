@@ -17,3 +17,8 @@ AS
 	@LeftArm, @RightArm, @Hair, @HairAccessory, @Hat, @Top, @FullBody, @Neck, @Bottom,
 	@Shoes, @LeftAccessory, @RightAccessory, @LeftHand, @RightHand);
 GO
+
+SELECT * FROM [db_owner].[UserAvatar];
+
+DELETE FROM [db_owner].[UserAvatar]
+WHERE UserId = 2;

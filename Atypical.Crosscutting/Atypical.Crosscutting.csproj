@@ -50,6 +50,7 @@
     <Compile Include="Dtos\Diary\DiaryEntryDto.cs" />
     <Compile Include="Dtos\Diary\FullChartDto.cs" />
     <Compile Include="Dtos\Inventory\InventoryDto.cs" />
+    <Compile Include="Dtos\Inventory\InventoryItemDto.cs" />
     <Compile Include="Dtos\User\UserDto.cs" />
     <Compile Include="Enums\CoinEnums.cs" />
     <Compile Include="Enums\DiaryEnums.cs" />

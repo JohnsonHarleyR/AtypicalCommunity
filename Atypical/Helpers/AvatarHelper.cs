@@ -1,4 +1,5 @@
 ﻿using Atypical.Crosscutting.Dtos.Avatar;
+using Atypical.Crosscutting.Dtos.Inventory;
 using Atypical.Crosscutting.Enums;
 using Atypical.Domain.Orchestrators.Avatar;
 using Atypical.Models.Avatar;
@@ -87,6 +88,28 @@ namespace Atypical.Helpers
 
 
         // Avatar Items
+        public static List<AvatarItemDto> GetAvatarItemsFromInventoryList(List<InventoryItemDto> items)
+        {
+            // Get orchestrator
+            AvatarOrchestrator avatarOrchestrator = new AvatarOrchestrator();
+
+            // create list to return
+            List<AvatarItemDto> avatarItems = new List<AvatarItemDto>();
+
+            // loop through items
+            foreach (var item in items)
+            {
+                // make sure the item is an avatar item
+                if (item.Type == ItemType.Avatar)
+                {
+                    AvatarItemDto avatarItem = 
+                        avatarOrchestrator.GetAvatarItemById(item.ItemId);
+                    avatarItems.Add(avatarItem);
+                }
+            }
+
+            return avatarItems;
+        }
         public static AvatarItemViewModel GetAvatarItemModel(AvatarItemDto itemDto)
         {
             AvatarItemViewModel itemModel = new AvatarItemViewModel()

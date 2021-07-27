@@ -16,5 +16,7 @@ namespace Atypical.Crosscutting.Interfaces
         string Description { get; set; }
         string IconUrl { get; set; }
 
+        ItemColor Color { get; set; }
+
     }
 }
